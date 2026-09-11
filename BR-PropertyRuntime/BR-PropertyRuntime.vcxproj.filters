@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\SDK Extension">
+      <UniqueIdentifier>{a2f501e2-ebbe-4354-98eb-2dca27f65019}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\SDK Extension">
+      <UniqueIdentifier>{86ddea5b-94c8-4a89-938d-831a7df92fbb}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ExceptionHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InitializeObjectHook.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BP_IBrickPropertyInterface_functions.cpp">
+      <Filter>Source Files\SDK Extension</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Hooks.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IBrickPropertyInterface.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BP_IBrickPropertyInterface_classes.hpp">
+      <Filter>Header Files\SDK Extension</Filter>
+    </ClInclude>
+    <ClInclude Include="BP_IBrickPropertyInterface_parameters.hpp">
+      <Filter>Header Files\SDK Extension</Filter>
+    </ClInclude>
+    <ClInclude Include="BP_FBrickPropertyChangedEvent_structs.hpp">
+      <Filter>Header Files\SDK Extension</Filter>
+    </ClInclude>
+    <ClInclude Include="BP_FBrickPropertyDeclaration_structs.hpp">
+      <Filter>Header Files\SDK Extension</Filter>
+    </ClInclude>
+    <ClInclude Include="BP_FBrickPropertyFocusEvent_structs.hpp">
+      <Filter>Header Files\SDK Extension</Filter>
+    </ClInclude>
+    <ClInclude Include="BP_BrickInputMappingPropertySettings_structs.hpp">
+      <Filter>Header Files\SDK Extension</Filter>
+    </ClInclude>
+    <ClInclude Include="BP_ColorBrickPropertySettings_structs.hpp">
+      <Filter>Header Files\SDK Extension</Filter>
+    </ClInclude>
+    <ClInclude Include="BP_EBrickValidityState_structs.hpp">
+      <Filter>Header Files\SDK Extension</Filter>
+    </ClInclude>
+    <ClInclude Include="BP_NumericBrickPropertySettings_structs.hpp">
+      <Filter>Header Files\SDK Extension</Filter>
+    </ClInclude>
+    <ClInclude Include="BP_TextBrickPropertySettings_structs.hpp">
+      <Filter>Header Files\SDK Extension</Filter>
+    </ClInclude>
+    <ClInclude Include="BP_ShouldCallSuperSettings_structs.hpp">
+      <Filter>Header Files\SDK Extension</Filter>
+    </ClInclude>
+    <ClInclude Include="BP_BrickPropertyType_structs.hpp">
+      <Filter>Header Files\SDK Extension</Filter>
+    </ClInclude>
+    <ClInclude Include="Extension.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
