@@ -20,7 +20,7 @@ uintptr_t GetInitializeBrickEditorObjectPointer()
 	constexpr char INITIALIZE_EDITOR_OBJECT_SIG[] = "4C 8B DC 55 53 57 41 54 49 8D 6B";
 	constexpr char EDITOR_INITIALIZE_EDITOR_OBJECT_MODULE[] = "BrickRigsModKitSteam-BrickRigs.dll";
 	constexpr char EDITOR_INITIALIZE_EDITOR_OBJECT_SYB[] = "?InitializeBrickEditorObject@UBrickEditorObject@@AEAAXPEAVUClass@@AEBUFBrickEditorObjectID@@W4EBrickEditorObjectContext@@AEBEAEBUFLegacyBrickEditorObjectClassID@@_N5@Z";
-	if (Hooks::IsEditorBinary())
+	if constexpr (EditorSDK)
 	{
 		return Hooks::GetSymbolAddress(EDITOR_INITIALIZE_EDITOR_OBJECT_MODULE, EDITOR_INITIALIZE_EDITOR_OBJECT_SYB);
 	}
@@ -32,7 +32,7 @@ uintptr_t GetImplementsInterfacePointer()
 	constexpr char IMPLEMNETS_INTERFACE_OBJECT_SIG[] = "48 89 5C 24 08 57 48 83 EC 20 48 8B FA 48 8B D9 48 85 D2 74 63";
 	constexpr char EDITOR_IMPLEMNETS_INTERFACE_OBJECT_MODULE[] = "BrickRigsModKitSteam-CoreUObject.dll";
 	constexpr char EDITOR_IMPLEMNETS_INTERFACE_OBJECT_SYB[] = "?ImplementsInterface@UClass@@QEBA_NPEBV1@@Z";
-	if (Hooks::IsEditorBinary())
+	if constexpr (EditorSDK)
 	{
 		return Hooks::GetSymbolAddress(EDITOR_IMPLEMNETS_INTERFACE_OBJECT_MODULE, EDITOR_IMPLEMNETS_INTERFACE_OBJECT_SYB);
 	}
@@ -71,15 +71,15 @@ Function<bool(SDK::UClass*, SDK::UClass*)> ImplementsInterface(GetImplementsInte
 
 Hook<void(SDK::UBrickEditorObject* This, SDK::UClass* InStaticInfoClass, SDK::FBrickEditorObjectID* InObjectID, EBrickEditorObjectContext InEditorContext, SDK::uint8 Version, FLegacyBrickEditorObjectClassID* LegacyClassID, bool bInHasBeenRecycled, bool bInCreatedAsMirrored)> InitializeBrickEditorObjectHook(GetInitializeBrickEditorObjectPointer(),
 [](SDK::UBrickEditorObject* This, SDK::UClass* InStaticInfoClass, SDK::FBrickEditorObjectID* InObjectID, EBrickEditorObjectContext InEditorContext, SDK::uint8 Version, FLegacyBrickEditorObjectClassID* LegacyClassID, bool bInHasBeenRecycled, bool bInCreatedAsMirrored) -> void
-{
-		//SDK::UBrickStatics::StaticClass();
-		/*
+{		
+		std::cout << SDK::UObject::GObjects->Num() << std::endl;
+		std::cout << SDK::IBP_IBrickPropertyInterface_C::StaticClass() << std::endl;
+		std::cout << This->Class->Name.ToString() << std::endl;
 	if (ImplementsInterface(This->Class, SDK::IBP_IBrickPropertyInterface_C::StaticClass()))
 	{
 		auto VTable = (IBrickPropertyInterface*)This->VTable;
 		std::cout << This->GetFullName() << std::endl;
 	}
-	*/
 	
 	//This->Class
 	InitializeBrickEditorObjectHook.CallOriginal(This, InStaticInfoClass, InObjectID, InEditorContext, Version, LegacyClassID, bInHasBeenRecycled, bInCreatedAsMirrored);

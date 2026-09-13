@@ -1,7 +1,11 @@
 <Solution>
   <Configurations>
+    <BuildType Name="Debug" />
+    <BuildType Name="Editor_Debug" />
+    <BuildType Name="Editor_Release" />
+    <BuildType Name="Release" />
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="BR-PropertyRuntime/BR-PropertyRuntime.vcxproj" />
+  <Project Path="BR-PropertyRuntime/BR-PropertyRuntime.vcxproj" Id="d2a12d75-b7c5-42ad-a246-77f7953ec678" />
 </Solution>

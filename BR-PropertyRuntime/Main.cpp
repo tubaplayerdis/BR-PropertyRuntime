@@ -82,15 +82,25 @@ DWORD WINAPI MainThread(LPVOID lpReserved)
     MH_Initialize();
     Hooks::SetupCreateObjectHook();
 
-    for (int i = 0; i < SDK::UObject::GObjects->Num(); ++i)
+    if (false)
     {
-        SDK::UObject* Object = SDK::UObject::GObjects->GetByIndex(i);
+        for (int i = 0; i < SDK::UObject::GObjects->Num(); ++i)
+        {
+            SDK::UObject* Object = SDK::UObject::GObjects->GetByIndex(i);
 
-        if (!Object)
-            continue;
+            std::cout << Object << std::endl;
 
-        if (Object->HasTypeFlag(SDK::EClassCastFlags::Class))
-            std::cout << "yay" << std::endl;
+            if (!Object || !Object->Class)
+                continue;
+
+            std::cout << Object->Class->Name.ToString() << std::endl;
+            //std::cout << (uint64_t)GetMember<SDK::EClassCastFlags>((void*)Object->Class, 0xE0) << std::endl;
+
+            /*
+            if (Object->HasTypeFlag(SDK::EClassCastFlags::Class))
+                std::cout << "yay" << std::endl;
+            */
+        }
     }
 
 #ifdef CONSOLE

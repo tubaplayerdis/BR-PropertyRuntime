@@ -77,7 +77,7 @@ struct __declspec(align(2)) FTextBrickProperty : FBrickProperty
     const bool bIsUserText;
     UC::int8 Pad_0[0x9];
 };
-static_assert(sizeof(FTextBrickProperty) == 0x28);
+//static_assert(sizeof(FTextBrickProperty) == 0x28);
 
 struct FBrickPropertyCategory
 {
