@@ -19,6 +19,9 @@
     <Filter Include="Source Files\SDK Extension">
       <UniqueIdentifier>{86ddea5b-94c8-4a89-938d-831a7df92fbb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Overrides">
+      <UniqueIdentifier>{5e5c624d-a544-492a-88da-b7802999eccc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -32,6 +35,12 @@
     </ClCompile>
     <ClCompile Include="BP_IBrickPropertyInterface_functions.cpp">
       <Filter>Source Files\SDK Extension</Filter>
+    </ClCompile>
+    <ClCompile Include="ReflectBrickProperties.cpp">
+      <Filter>Source Files\Overrides</Filter>
+    </ClCompile>
+    <ClCompile Include="BrickPropertyEvents.cpp">
+      <Filter>Source Files\Overrides</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -78,6 +87,9 @@
       <Filter>Header Files\SDK Extension</Filter>
     </ClInclude>
     <ClInclude Include="Extension.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PropertyInterfaceOverrides.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

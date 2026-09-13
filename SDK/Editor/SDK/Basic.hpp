@@ -275,7 +275,7 @@ public:
 		return ChunkPtr[InChunkIdx].Object;
 	}
 };
-//DUMPER7_ASSERTS_TUObjectArray;
+DUMPER7_ASSERTS_TUObjectArray;
 
 class TUObjectArrayWrapper
 {

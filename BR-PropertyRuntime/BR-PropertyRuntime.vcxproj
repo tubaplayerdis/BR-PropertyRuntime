@@ -322,9 +322,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BP_IBrickPropertyInterface_functions.cpp" />
+    <ClCompile Include="BrickPropertyEvents.cpp" />
     <ClCompile Include="InitializeObjectHook.cpp" />
     <ClCompile Include="ExceptionHandler.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="ReflectBrickProperties.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BP_BrickInputMappingPropertySettings_structs.hpp" />
@@ -342,6 +344,7 @@
     <ClInclude Include="Extension.hpp" />
     <ClInclude Include="Hooks.hpp" />
     <ClInclude Include="IBrickPropertyInterface.hpp" />
+    <ClInclude Include="PropertyInterfaceOverrides.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

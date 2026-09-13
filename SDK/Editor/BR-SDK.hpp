@@ -1,5 +1,6 @@
 #pragma once
 #pragma warning(disable : 4369)
+#define BRMK_SDK
 constexpr bool GameSDK = false;
 constexpr bool EditorSDK = true;
 

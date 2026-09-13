@@ -75,9 +75,10 @@ struct __declspec(align(2)) FTextBrickProperty : FBrickProperty
     const bool bIsPassword;
     const bool bAllowMultiLine;
     const bool bIsUserText;
-    UC::int8 Pad_0[0x9];
 };
-//static_assert(sizeof(FTextBrickProperty) == 0x28);
+//static_assert(sizeof(FTextBrickProperty) == 0x20);
+
+typedef FBrickProperty FBoolBrickProperty;//Struct of same size in dissasembly
 
 struct FBrickPropertyCategory
 {
@@ -112,7 +113,7 @@ const struct __declspec(align(8)) FBrickPropertyEditInfo : FBrickPropertyInstanc
     SDK::TArray<SDK::TWeakObjectPtr<SDK::UObject>> ContainerObjects;
     bool bIsEnabled;
     bool bIsReadOnly;
-    SDK::EBrickUIColorStyle ColorStyle[1];
+    SDK::EBrickUIColorStyle ColorStyle;
     SDK::uint8 pad_0[1];
     int MaxComboBoxListItems;
     int MaxComboBoxItemsPerRow;
@@ -158,11 +159,11 @@ const struct FBrickPropertyFocusEvent : FBrickPropertyInstance
 /* 200980 */
 struct /*VFT*/ IBrickPropertyInterface
 {
-    void(__fastcall * Deconstructor_IBrickPropertyInterface)(IBrickPropertyInterface* This);
-    SDK::UObject* (__fastcall* _getUObject)(IBrickPropertyInterface* This);
-    void(__fastcall* ReflectBrickProperties)(IBrickPropertyInterface* This, FBrickPropertyReflection*);
-    bool(__fastcall* CanModifyBrickProperty)(IBrickPropertyInterface* This);
-    void(__fastcall* PostModifyBrickProperty)(IBrickPropertyInterface* This, const FBrickPropertyChangedEvent*);
-    void(__fastcall* UpdateFocusedBrickProperty)(IBrickPropertyInterface* This, const FBrickPropertyFocusEvent*);
+    void(__fastcall * Deconstructor_IBrickPropertyInterface)(SDK::UBrickEditorObject* This);
+    SDK::UObject* (__fastcall* _getUObject)(SDK::UBrickEditorObject* This);
+    void(__fastcall* ReflectBrickProperties)(SDK::UBrickEditorObject* This, FBrickPropertyReflection*);
+    bool(__fastcall* CanModifyBrickProperty)(SDK::UBrickEditorObject* This);
+    void(__fastcall* PostModifyBrickProperty)(SDK::UBrickEditorObject* This, const FBrickPropertyChangedEvent*);
+    void(__fastcall* UpdateFocusedBrickProperty)(SDK::UBrickEditorObject* This, const FBrickPropertyFocusEvent*);
 };
 

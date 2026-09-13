@@ -17,12 +17,12 @@ SDK_NAMESPACE_START
 // NumValues: 0x0006
 enum class EBP_BrickPropertyType : uint8
 {
-	NewEnumerator0                           = 0,
-	NewEnumerator1                           = 1,
-	NewEnumerator2                           = 2,
-	NewEnumerator3                           = 3,
-	NewEnumerator4                           = 4,
-	BP_MAX                                   = 5,
+	Bool								 = 0,
+	Numeric								 = 1,
+	Color								 = 2,
+	Text								 = 3,
+	InputMapping                         = 4,
+	BP_MAX                               = 5,
 };
 
 SDK_NAMESPACE_END
