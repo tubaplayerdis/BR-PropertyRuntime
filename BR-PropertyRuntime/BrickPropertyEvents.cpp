@@ -1,17 +1,17 @@
 #include "PropertyInterfaceOverrides.hpp"
 #include "Extension.hpp"
 
-bool CanModifyBrickPropertyOverride(SDK::UBrickEditorObject* This)
+bool CanModifyBrickPropertyOverride(IBrickPropertyInterface* This)
 {
 	return true;
 }
 
-void PostModifyBrickPropertyOverride(SDK::UBrickEditorObject* This, const FBrickPropertyChangedEvent* Event)
+void PostModifyBrickPropertyOverride(IBrickPropertyInterface* This, const FBrickPropertyChangedEvent* Event)
 {
 
 }
 
-void UpdateFocusedBrickPropertyOverride(SDK::UBrickEditorObject* This, const FBrickPropertyFocusEvent* Event)
+void UpdateFocusedBrickPropertyOverride(IBrickPropertyInterface* This, const FBrickPropertyFocusEvent* Event)
 {
 
 }

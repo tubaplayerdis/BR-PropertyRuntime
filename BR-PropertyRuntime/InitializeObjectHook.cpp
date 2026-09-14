@@ -6,6 +6,8 @@
 #include <string>
 #include <map>
 
+std::map<std::string, IBrickPropertyInterface*> InterfaceRegistry = std::map<std::string, IBrickPropertyInterface*>();
+
 bool Hooks::IsEditorBinary()
 {
 	static const bool DetectedEditorBinary = GetModuleHandle(L"BrickRigsModKitSteam.exe") != nullptr;
@@ -75,11 +77,11 @@ Function<bool(SDK::UClass*, SDK::UClass*)> ImplementsInterface(GetImplementsInte
 #ifdef BRMK_SDK
 IBrickPropertyInterface OverrideBrickPropertyInterface =
 {
-	.Deconstructor_IBrickPropertyInterface = [](SDK::UBrickEditorObject* This) -> void
+	.Deconstructor_IBrickPropertyInterface = [](IBrickPropertyInterface* This) -> void
 	{
-		std::cout << "I am supposed to call a destructor: " << This->Name.ToString() << std::endl;
+		std::cout << "I am supposed to call a destructor: " << This << std::endl;
 	},
-	._getUObject = (SDK::UObject * (__fastcall*)(SDK::UBrickEditorObject*))Hooks::GetSymbolAddress("BrickRigsModKitSteam-BrickRigs.dll", "?_getUObject@UBrickEditorObject@@UEBAPEAVUObject@@XZ"),
+	._getUObject = (SDK::UObject * (__fastcall*)(IBrickPropertyInterface*))Hooks::GetSymbolAddress("BrickRigsModKitSteam-BrickRigs.dll", "?_getUObject@UBrickEditorObject@@UEBAPEAVUObject@@XZ"),
 	.ReflectBrickProperties = ReflectBrickPropertiesOverride,
 	.CanModifyBrickProperty = CanModifyBrickPropertyOverride,
 	.PostModifyBrickProperty = PostModifyBrickPropertyOverride,
@@ -97,16 +99,17 @@ IBrickPropertyInterface OverrideBrickPropertyInterface =
 Hook<void(SDK::UBrickEditorObject* This, SDK::UClass* InStaticInfoClass, SDK::FBrickEditorObjectID* InObjectID, EBrickEditorObjectContext InEditorContext, SDK::uint8 Version, FLegacyBrickEditorObjectClassID* LegacyClassID, bool bInHasBeenRecycled, bool bInCreatedAsMirrored)> InitializeBrickEditorObjectHook(GetInitializeBrickEditorObjectPointer(),
 [](SDK::UBrickEditorObject* This, SDK::UClass* InStaticInfoClass, SDK::FBrickEditorObjectID* InObjectID, EBrickEditorObjectContext InEditorContext, SDK::uint8 Version, FLegacyBrickEditorObjectClassID* LegacyClassID, bool bInHasBeenRecycled, bool bInCreatedAsMirrored) -> void
 {		
-	InitializeBrickEditorObjectHook.CallOriginal(This, InStaticInfoClass, InObjectID, InEditorContext, Version, LegacyClassID, bInHasBeenRecycled, bInCreatedAsMirrored);
 	if (This->Class && ImplementsInterface(This->Class, SDK::IBP_IBrickPropertyInterface_C::StaticClass()))
 	{
 		auto VTable = GetMember<IBrickPropertyInterface*>(This, sizeof(SDK::UObject));
-		std::cout << "Implemented Class Found!" << std::endl;
+		std::cout << "Implemented Class Found! " << This << std::endl;
 
 		std::string ClassName = This->Class->Name.ToString();
+		std::cout << ClassName << std::endl;
 		if (!InterfaceRegistry.contains(ClassName))
 		{
-			InterfaceRegistry.insert({ ClassName, *VTable });
+			std::cout << "Registering!" << std::endl;
+			InterfaceRegistry.insert(std::make_pair(ClassName, VTable));
 		}
 		std::cout << "Patching!" << std::endl;
 
@@ -114,7 +117,8 @@ Hook<void(SDK::UBrickEditorObject* This, SDK::UClass* InStaticInfoClass, SDK::FB
 		std::cout << (uintptr_t)VTable->_getUObject - (uintptr_t)GetModuleHandleW(L"BrickRigsModKitSteam-BrickRigs.dll") << std::endl;
 		SetMember<IBrickPropertyInterface*>(This, sizeof(SDK::UObject), &OverrideBrickPropertyInterface);
 	}
-
+	InitializeBrickEditorObjectHook.CallOriginal(This, InStaticInfoClass, InObjectID, InEditorContext, Version, LegacyClassID, bInHasBeenRecycled, bInCreatedAsMirrored);
+	//Offset of the IBrickPropertyInterfacePointer is 0x28 in release and 0x30 in editor.
 });
 
 void Hooks::SetupCreateObjectHook()

@@ -44,32 +44,42 @@ void DeclareBooleanProperty(SDK::FBP_FBrickPropertyDeclaration Declaration, FBri
 	}
 }
 
-void ReflectBrickPropertiesOverride(SDK::UBrickEditorObject* This, FBrickPropertyReflection* Reflection)
+void ReflectBrickPropertiesOverride(IBrickPropertyInterface* This, FBrickPropertyReflection* Reflection)
 {
-	std::cout << "Custom function!. Calling original now." << std::endl;
+	std::cout << "Custom function!. Calling original now: " << GetEditorObject(This) << std::endl;
 
-
-
-	auto BPInterface = reinterpret_cast<SDK::IBP_IBrickPropertyInterface_C*>(This);
+	/*
+	auto BPInterface = reinterpret_cast<SDK::IBP_IBrickPropertyInterface_C*>(GetEditorObject(This));
 	SDK::FBP_ShouldCallSuperSettings ShouldCallSuperSettings;
 	BPInterface->ShouldCallSuperReflectBrickProperties(&ShouldCallSuperSettings);
 	const bool CallSuper = ShouldCallSuperSettings.ShouldCallSuper_1_3CC922DD4B3C9B04AF8CC79AF56C037B;
 	const bool CallAtStart = ShouldCallSuperSettings.CallAtStart_3_2B65F40F4734A4579FD5929B66219043;
+	*/
 
-	auto SuperFunction = [](SDK::UBrickEditorObject* This, FBrickPropertyReflection* Reflection) -> void
+	auto SuperFunction = [](IBrickPropertyInterface* This, FBrickPropertyReflection* Reflection) -> void
 	{
-		auto Brick = reinterpret_cast<SDK::UBrickEditorObject*>(This);
+		auto Brick = GetEditorObject(This);
 		auto Interface = InterfaceRegistry.find(Brick->Class->Name.ToString());
+		for (const auto& [key, value] : InterfaceRegistry) {
+			std::cout << key << " : " << value << "\n";
+		}
 		if (Interface != InterfaceRegistry.end())
 		{
-			Interface->second.ReflectBrickProperties(This, Reflection);
+			std::cout << (uintptr_t)Interface->second->ReflectBrickProperties - (uintptr_t)GetModuleHandleW(L"BrickRigsModKitSteam-BrickRigs.dll") << std::endl;
+			Interface->second->ReflectBrickProperties(This, Reflection);
 		}
 	};
 
-	if (CallSuper && CallAtStart)
+	SuperFunction(This, Reflection);
+	return;
+
+	if (true/*CallSuper && CallAtStart*/)
 	{
 		SuperFunction(This, Reflection);
 	}
+
+	return;
+	/*
 
 	//Actually Reflect Properties
 	auto Declarations = SDK::TArray<SDK::FBP_FBrickPropertyDeclaration>();
@@ -91,4 +101,5 @@ void ReflectBrickPropertiesOverride(SDK::UBrickEditorObject* This, FBrickPropert
 	{
 		SuperFunction(This, Reflection);
 	}
+	*/
 }

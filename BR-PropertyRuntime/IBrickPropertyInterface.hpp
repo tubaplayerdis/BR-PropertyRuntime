@@ -159,11 +159,11 @@ const struct FBrickPropertyFocusEvent : FBrickPropertyInstance
 /* 200980 */
 struct /*VFT*/ IBrickPropertyInterface
 {
-    void(__fastcall * Deconstructor_IBrickPropertyInterface)(SDK::UBrickEditorObject* This);
-    SDK::UObject* (__fastcall* _getUObject)(SDK::UBrickEditorObject* This);
-    void(__fastcall* ReflectBrickProperties)(SDK::UBrickEditorObject* This, FBrickPropertyReflection*);
-    bool(__fastcall* CanModifyBrickProperty)(SDK::UBrickEditorObject* This);
-    void(__fastcall* PostModifyBrickProperty)(SDK::UBrickEditorObject* This, const FBrickPropertyChangedEvent*);
-    void(__fastcall* UpdateFocusedBrickProperty)(SDK::UBrickEditorObject* This, const FBrickPropertyFocusEvent*);
+    void(__fastcall * Deconstructor_IBrickPropertyInterface)(IBrickPropertyInterface* This);
+    SDK::UObject* (__fastcall* _getUObject)(IBrickPropertyInterface* This);
+    void(__fastcall* ReflectBrickProperties)(IBrickPropertyInterface* This, FBrickPropertyReflection*);
+    bool(__fastcall* CanModifyBrickProperty)(IBrickPropertyInterface* This);
+    void(__fastcall* PostModifyBrickProperty)(IBrickPropertyInterface* This, const FBrickPropertyChangedEvent*);
+    void(__fastcall* UpdateFocusedBrickProperty)(IBrickPropertyInterface* This, const FBrickPropertyFocusEvent*);
 };
 
