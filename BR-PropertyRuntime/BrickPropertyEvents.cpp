@@ -8,8 +8,6 @@ bool CanModifyBrickPropertyOverride(IBrickPropertyInterface* This)
 
 void PostModifyBrickPropertyOverride(IBrickPropertyInterface* This, const FBrickPropertyChangedEvent* Event)
 {
-	std::cout << "FUCK!1" << std::endl;
-
 	auto BPInterface = GetAsInterface(This);
 	SDK::FBP_ShouldCallSuperSettings ShouldCallSuperSettings;
 	BPInterface->ShouldCallSuperPostModifyBrickProperty(&ShouldCallSuperSettings);
@@ -41,8 +39,6 @@ void PostModifyBrickPropertyOverride(IBrickPropertyInterface* This, const FBrick
 
 void UpdateFocusedBrickPropertyOverride(IBrickPropertyInterface* This, const FBrickPropertyFocusEvent* Event)
 {
-	std::cout << "FUCK!2" << std::endl;
-
 	auto BPInterface = GetAsInterface(This);
 	SDK::FBP_ShouldCallSuperSettings ShouldCallSuperSettings;
 	BPInterface->ShouldCallSuperUpdateFocusedBrickProperty(&ShouldCallSuperSettings);

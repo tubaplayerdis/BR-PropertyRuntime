@@ -8,7 +8,7 @@
 
 // Package: BP_IBrickPropertyInterface
 
-#include <SDK/Basic.hpp>
+#include <BR-SDK.hpp>
 
 #include "BP_IBrickPropertyInterface_classes.hpp"
 #include "BP_IBrickPropertyInterface_parameters.hpp"
@@ -23,7 +23,11 @@ SDK_NAMESPACE_START
 
 void IBP_IBrickPropertyInterface_C::CanModifyBrickProperties(bool* Return_Value)
 {
+#ifdef BRMK_SDK
+	class UFunction* Func = nullptr; //In BRMK, the UFunction can be edited. in BR it cannot.
+#else
 	static class UFunction* Func = nullptr;
+#endif
 	std::string ClassName = AsUObject()->Class->Name.ToString();
 
 	if (Func == nullptr)
@@ -45,7 +49,11 @@ void IBP_IBrickPropertyInterface_C::CanModifyBrickProperties(bool* Return_Value)
 
 void IBP_IBrickPropertyInterface_C::PostModifyBrickProperty(const struct FBP_FBrickPropertyChangedEvent& Event)
 {
+#ifdef BRMK_SDK
+	class UFunction* Func = nullptr;
+#else
 	static class UFunction* Func = nullptr;
+#endif
 	std::string ClassName = AsUObject()->Class->Name.ToString();
 
 	if (Func == nullptr)
@@ -66,7 +74,11 @@ void IBP_IBrickPropertyInterface_C::PostModifyBrickProperty(const struct FBP_FBr
 
 void IBP_IBrickPropertyInterface_C::ShouldCallSuperPostModifyBrickProperty(struct FBP_ShouldCallSuperSettings* Return)
 {
+#ifdef BRMK_SDK
+	class UFunction* Func = nullptr;
+#else
 	static class UFunction* Func = nullptr;
+#endif
 	std::string ClassName = AsUObject()->Class->Name.ToString();
 
 	if (Func == nullptr)
@@ -88,7 +100,11 @@ void IBP_IBrickPropertyInterface_C::ShouldCallSuperPostModifyBrickProperty(struc
 
 void IBP_IBrickPropertyInterface_C::ShouldCallSuperUpdateFocusedBrickProperty(struct FBP_ShouldCallSuperSettings* Return)
 {
+#ifdef BRMK_SDK
+	class UFunction* Func = nullptr;
+#else
 	static class UFunction* Func = nullptr;
+#endif
 	std::string ClassName = AsUObject()->Class->Name.ToString();
 
 	if (Func == nullptr)
@@ -110,7 +126,11 @@ void IBP_IBrickPropertyInterface_C::ShouldCallSuperUpdateFocusedBrickProperty(st
 
 void IBP_IBrickPropertyInterface_C::UpdateFocusedBrickProperty(const struct FBP_FBrickPropertyFocusEvent& Event)
 {
+#ifdef BRMK_SDK
+	class UFunction* Func = nullptr;
+#else
 	static class UFunction* Func = nullptr;
+#endif
 	std::string ClassName = AsUObject()->Class->Name.ToString();
 
 	if (Func == nullptr)
@@ -131,7 +151,11 @@ void IBP_IBrickPropertyInterface_C::UpdateFocusedBrickProperty(const struct FBP_
 
 void IBP_IBrickPropertyInterface_C::ReflectBrickProperties(TArray<struct FBP_FBrickPropertyDeclaration>* Return)
 {
+#ifdef BRMK_SDK
+	class UFunction* Func = nullptr;
+#else
 	static class UFunction* Func = nullptr;
+#endif
 	std::string ClassName = AsUObject()->Class->Name.ToString();
 
 	if (Func == nullptr)
@@ -153,7 +177,11 @@ void IBP_IBrickPropertyInterface_C::ReflectBrickProperties(TArray<struct FBP_FBr
 
 void IBP_IBrickPropertyInterface_C::ShouldCallSuperReflectBrickProperties(struct FBP_ShouldCallSuperSettings* Return)
 {
+#ifdef BRMK_SDK
+	class UFunction* Func = nullptr;
+#else
 	static class UFunction* Func = nullptr;
+#endif
 	std::string ClassName = AsUObject()->Class->Name.ToString();
 
 	if (Func == nullptr)

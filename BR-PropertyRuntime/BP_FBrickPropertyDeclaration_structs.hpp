@@ -26,8 +26,8 @@ struct FBP_FBrickPropertyDeclaration final
 {
 public:
 	EBP_BrickPropertyType                         Type_33_5AFD4DE54866742EFCB3248308311FFE;          // 0x0000(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
-	uint8                                         Pad_1[0x7];                                        // 0x0001(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	class FText                                   Category_2_EDE2EE4A4A7DAAE4534530B70F2CFF7C;       // 0x0008(0x0018)(Edit, BlueprintVisible)
+	uint8                                         Pad_1[0x3];                                        // 0x0001(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	int32										  CategoryIndex_37_EDE2EE4A4A7DAAE4534530B70F2CFF7C;
 	class FText                                   PropertyName_6_90CFF1AA403BE3727D57088D9A0E8480;   // 0x0020(0x0018)(Edit, BlueprintVisible)
 	class FText                                   DisplayName_7_E5FF33B84665E94A6EF8C49F03E1C2C5;    // 0x0038(0x0018)(Edit, BlueprintVisible)
 	class FText                                   Description_10_FEF8680340F9F4222764FE876625C467;   // 0x0050(0x0018)(Edit, BlueprintVisible)

@@ -16,47 +16,99 @@ Function<SDK::FProperty* (SDK::UStruct*, SDK::FName)>																									Fi
 Function<SDK::FText* (SDK::FText* This, SDK::FText* That)>																								FTextCopyOperator("48 89 5C 24 18 48 89 74 24 20 41 56 48 83 EC 40 48 8B 5A");
 #endif
 
-
-void DeclareBooleanProperty(SDK::UClass* ObjClass, SDK::FBP_FBrickPropertyDeclaration Declaration, FBrickPropertyReflection* Reflection)
+SDK::FProperty* GetPropertyValid(const wchar_t* TypeName, SDK::UClass* ClassWithProperty, SDK::FString FullPropertyName)
 {
-	TSharedRef<FBoolBrickProperty> PropertyReference;
-	std::cout << (uintptr_t)ConstructBrickProperty_Bool.GetPtr() - (uintptr_t)GetModuleHandleW(L"BrickRigsModKitSteam-BrickRigs.dll") + 0x180000000 << std::endl;
-	std::cout << (uintptr_t)AddBrickProperty.GetPtr() - (uintptr_t)GetModuleHandleW(L"BrickRigsModKitSteam-BrickRigs.dll") + 0x180000000 << std::endl;
-	std::cout << (uintptr_t)AddBrickPropertyDisplayInfo.GetPtr() - (uintptr_t)GetModuleHandleW(L"BrickRigsModKitSteam-BrickRigs.dll") + 0x180000000 << std::endl;
-	ConstructBrickProperty_Bool(&PropertyReference);
+	SDK::FName PropertyName = SDK::UKismetStringLibrary::Conv_StringToName(FullPropertyName);
+	SDK::FProperty* ClassProperty = FindPropertyByName(ClassWithProperty, PropertyName);
+	static constexpr SDK::FLinearColor ErrorMessageColor{ .R = 1, .G = 0, .B = 0, .A = 0.8 };
 
-	SDK::FString FullPropertyName = SDK::UKismetTextLibrary::Conv_TextToString(Declaration.PropertyName_6_90CFF1AA403BE3727D57088D9A0E8480);
-	std::cout << FullPropertyName.ToString() << std::endl;
+	if (!ClassProperty)
+	{
+		std::wstring ErrorMessage = L"[BR-PropertyRuntime]: Could not find Property of name: " + FullPropertyName.ToWString();
+		if constexpr (EditorSDK)
+		{
+			SDK::FString FStringErrorMessage(ErrorMessage.c_str());
+			SDK::UKismetSystemLibrary::PrintString(SDK::UWorld::GetWorld(), FStringErrorMessage, true, true, ErrorMessageColor, 10);
+		}
+		else
+		{
+			std::wcout << ErrorMessage << std::endl;
+		}
+		return nullptr;
+	}
 
-	PropertyReference.Object->PropertyName = SDK::UKismetStringLibrary::Conv_StringToName(FullPropertyName);
-	PropertyReference.Object->Property = FindPropertyByName(ObjClass, PropertyReference.Object->PropertyName);
+	SDK::FString CPPTypeString;
+	CallVTableFunction<SDK::FString*, SDK::FString*, SDK::FString*, unsigned int>(13, ClassProperty, &CPPTypeString, nullptr, 0);
+	if (CPPTypeString.ToWString() != TypeName)
+	{
+		std::wstring ErrorMessage = L"[BR-PropertyRuntime]: Type Mismatch! Property: " + FullPropertyName.ToWString() + L" Type: " + CPPTypeString.ToWString() + L" Expected:" + TypeName;
+		if constexpr (EditorSDK)
+		{
+			SDK::FString FStringErrorMessage(ErrorMessage.c_str());
+			SDK::UKismetSystemLibrary::PrintString(SDK::UWorld::GetWorld(), FStringErrorMessage, true, true, ErrorMessageColor, 10);
+		}
+		else
+		{
+			std::wcout << ErrorMessage << std::endl;
+		}
+		return nullptr;
+	}
 
-	std::cout << "PROP: " << PropertyReference.Object->Property << std::endl;
+	return ClassProperty;
+}
 
+void AddPropertyGeneric(SDK::FString FullPropertyName, TSharedRef<FBoolBrickProperty> PropertyReference, SDK::FBP_FBrickPropertyDeclaration Declaration, FBrickPropertyReflection* Reflection)
+{
 	FBrickPropertyInstance Instance = FBrickPropertyInstance{
 		.BrickProperty = PropertyReference,
 		.FullPropertyName = FullPropertyName,
 		.ParentPropertyChain = SDK::TArray<SDK::FStructProperty>()
 	};
-	std::cout << "SER: " << Reflection->bIsSerializing << std::endl;
+
 	if (Reflection->bIsSerializing)
 	{
-		//std::cout << Reflection->BrickProperties.Max() - Reflection->BrickProperties.Num() << std::endl;
-		//Reflection->BrickProperties.Add(Instance);
 		AddBrickProperty(Reflection, &PropertyReference, &Instance.FullPropertyName);
 	}
 	else
 	{
 		auto EditInfo = AddBrickPropertyDisplayInfo(Reflection, &PropertyReference, &FullPropertyName, &Declaration.DisplayName_7_E5FF33B84665E94A6EF8C49F03E1C2C5);
-	
+
 		EditInfo->DisplayName = Declaration.DisplayName_7_E5FF33B84665E94A6EF8C49F03E1C2C5;
-		//EditInfo->DescriptionText = Declaration.Description_10_FEF8680340F9F4222764FE876625C467;
+		EditInfo->DescriptionText = Declaration.Description_10_FEF8680340F9F4222764FE876625C467;
 		EditInfo->bIsEnabled = Declaration.bIsEnabled_12_C37DF3214F1B585DB23291A83D02D5FE;
 		EditInfo->bIsReadOnly = Declaration.bIsReadOnly_14_36BD3D53474F4FE5A355B294996AD4E5;
 		EditInfo->ColorStyle = Declaration.ColorStyle_17_E6E6524E41F70E650422F49B6491187E;
+
+		return;
+		for (int i = 0; i < Reflection->BrickPropertyEditInfos.Num(); i++)
+		{
+			if (Reflection->BrickPropertyEditInfos[i].First.Object = EditInfo)
+			{
+				Reflection->BrickPropertyEditInfos[i].Second = Declaration.CategoryIndex_37_EDE2EE4A4A7DAAE4534530B70F2CFF7C;
+			}
+		}
 		//EditInfo->MaxComboBoxItemsPerRow = 0;
 		//EditInfo->MaxComboBoxListItems = 0;
 	}
+}
+
+
+void DeclareBooleanProperty(SDK::UClass* ObjClass, SDK::FBP_FBrickPropertyDeclaration Declaration, FBrickPropertyReflection* Reflection)
+{
+	SDK::FString FullPropertyName = SDK::UKismetTextLibrary::Conv_TextToString(Declaration.PropertyName_6_90CFF1AA403BE3727D57088D9A0E8480);
+	SDK::FProperty* Property = GetPropertyValid(L"bool", ObjClass, FullPropertyName);
+	if (Property == nullptr) return;
+
+	TSharedRef<FBoolBrickProperty> PropertyReference;
+	ConstructBrickProperty_Bool(&PropertyReference);
+
+	SDK::FName PropertyName = SDK::UKismetStringLibrary::Conv_StringToName(FullPropertyName);
+	std::cout << FullPropertyName.ToString() << std::endl;
+
+	PropertyReference.Object->PropertyName = PropertyName;
+	PropertyReference.Object->Property = Property;
+
+	AddPropertyGeneric(FullPropertyName, PropertyReference, Declaration, Reflection);
 }
 
 void ReflectBrickPropertiesOverride(IBrickPropertyInterface* This, FBrickPropertyReflection* Reflection)

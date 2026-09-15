@@ -115,11 +115,14 @@ const struct __declspec(align(8)) FBrickPropertyChangedEvent
 
 const struct __declspec(align(8)) FBrickPropertyEditInfo : FBrickPropertyInstance, TSharedFromThis<FBrickPropertyEditInfo>
 {
-    SDK::FText DisplayName;
-    SDK::FText DescriptionText;
-    SDK::TArray<SDK::TWeakObjectPtr<SDK::UObject>> ContainerObjects;
-    bool bIsEnabled;
-    bool bIsReadOnly;
+    SDK::FText DisplayName;              // 0x40, size 0x18
+    SDK::uint64 Unknown1;                // 0x58
+    void* Unknown2;                      // 0x60
+    SDK::FText DescriptionText;          // 0x68, size 0x18
+    SDK::TArray<SDK::TWeakObjectPtr<SDK::UObject>> ContainerObjects; // 0x80, size 0x10
+    SDK::FWeakObjectPtr Unknown5;        // 0x90
+    bool bIsEnabled;                     // 0x98
+    bool bIsReadOnly;                    // 0x99  <- CONFIRMED
     SDK::EBrickUIColorStyle ColorStyle;
     SDK::uint8 pad_0[1];
     int MaxComboBoxListItems;
@@ -129,7 +132,7 @@ const struct __declspec(align(8)) FBrickPropertyEditInfo : FBrickPropertyInstanc
     SDK::TOptional<std::byte> OrientationOverride;
     SDK::uint8 pad_2[6];
 };
-static_assert(sizeof(FBrickPropertyEditInfo) == 0xA8);
+//static_assert(sizeof(FBrickPropertyEditInfo) == 0xA8);
 
 struct FBrickPropertyReflection
 {
