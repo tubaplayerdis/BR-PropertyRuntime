@@ -1,6 +1,13 @@
 #pragma once
 #include <BR-SDK.hpp>
 
+struct FRefrenceControllerBase
+{
+    void* VTable;
+    int SharedRefrenceCount;
+    int WeakRefrenceCount;
+};
+
 template<typename T>
 struct TSharedRef
 {

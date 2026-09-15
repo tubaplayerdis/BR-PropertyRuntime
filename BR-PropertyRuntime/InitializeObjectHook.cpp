@@ -121,6 +121,15 @@ Hook<void(SDK::UBrickEditorObject* This, SDK::UClass* InStaticInfoClass, SDK::FB
 	//Offset of the IBrickPropertyInterfacePointer is 0x28 in release and 0x30 in editor.
 });
 
+struct __declspec(align(8)) FTooltipContent
+{
+	SDK::FText TitleText;
+	SDK::FText ContentText;
+	SDK::FName ActionName;
+	SDK::EInputActionTriggerType TriggerType;
+	std::byte ColorStyle[1];
+};
+
 void Hooks::SetupCreateObjectHook()
 {
 	InitializeBrickEditorObjectHook.Create();

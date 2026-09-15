@@ -24,9 +24,10 @@ SDK_NAMESPACE_START
 void IBP_IBrickPropertyInterface_C::CanModifyBrickProperties(bool* Return_Value)
 {
 	static class UFunction* Func = nullptr;
+	std::string ClassName = AsUObject()->Class->Name.ToString();
 
 	if (Func == nullptr)
-		Func = AsUObject()->Class->GetFunction("BP_IBrickPropertyInterface_C", "CanModifyBrickProperties");
+		Func = AsUObject()->Class->GetFunction(ClassName.c_str(), "CanModifyBrickProperties");
 
 	Params::BP_IBrickPropertyInterface_C_CanModifyBrickProperties Parms{};
 
@@ -45,9 +46,10 @@ void IBP_IBrickPropertyInterface_C::CanModifyBrickProperties(bool* Return_Value)
 void IBP_IBrickPropertyInterface_C::PostModifyBrickProperty(const struct FBP_FBrickPropertyChangedEvent& Event)
 {
 	static class UFunction* Func = nullptr;
+	std::string ClassName = AsUObject()->Class->Name.ToString();
 
 	if (Func == nullptr)
-		Func = AsUObject()->Class->GetFunction("BP_IBrickPropertyInterface_C", "PostModifyBrickProperty");
+		Func = AsUObject()->Class->GetFunction(ClassName.c_str(), "PostModifyBrickProperty");
 
 	Params::BP_IBrickPropertyInterface_C_PostModifyBrickProperty Parms{};
 
@@ -65,9 +67,10 @@ void IBP_IBrickPropertyInterface_C::PostModifyBrickProperty(const struct FBP_FBr
 void IBP_IBrickPropertyInterface_C::ShouldCallSuperPostModifyBrickProperty(struct FBP_ShouldCallSuperSettings* Return)
 {
 	static class UFunction* Func = nullptr;
+	std::string ClassName = AsUObject()->Class->Name.ToString();
 
 	if (Func == nullptr)
-		Func = AsUObject()->Class->GetFunction("BP_IBrickPropertyInterface_C", "ShouldCallSuperPostModifyBrickProperty");
+		Func = AsUObject()->Class->GetFunction(ClassName.c_str(), "ShouldCallSuperPostModifyBrickProperty");
 
 	Params::BP_IBrickPropertyInterface_C_ShouldCallSuperPostModifyBrickProperty Parms{};
 
@@ -86,9 +89,10 @@ void IBP_IBrickPropertyInterface_C::ShouldCallSuperPostModifyBrickProperty(struc
 void IBP_IBrickPropertyInterface_C::ShouldCallSuperUpdateFocusedBrickProperty(struct FBP_ShouldCallSuperSettings* Return)
 {
 	static class UFunction* Func = nullptr;
+	std::string ClassName = AsUObject()->Class->Name.ToString();
 
 	if (Func == nullptr)
-		Func = AsUObject()->Class->GetFunction("BP_IBrickPropertyInterface_C", "ShouldCallSuperUpdateFocusedBrickProperty");
+		Func = AsUObject()->Class->GetFunction(ClassName.c_str(), "ShouldCallSuperUpdateFocusedBrickProperty");
 
 	Params::BP_IBrickPropertyInterface_C_ShouldCallSuperUpdateFocusedBrickProperty Parms{};
 
@@ -107,9 +111,10 @@ void IBP_IBrickPropertyInterface_C::ShouldCallSuperUpdateFocusedBrickProperty(st
 void IBP_IBrickPropertyInterface_C::UpdateFocusedBrickProperty(const struct FBP_FBrickPropertyFocusEvent& Event)
 {
 	static class UFunction* Func = nullptr;
+	std::string ClassName = AsUObject()->Class->Name.ToString();
 
 	if (Func == nullptr)
-		Func = AsUObject()->Class->GetFunction("BP_IBrickPropertyInterface_C", "UpdateFocusedBrickProperty");
+		Func = AsUObject()->Class->GetFunction(ClassName.c_str(), "UpdateFocusedBrickProperty");
 
 	Params::BP_IBrickPropertyInterface_C_UpdateFocusedBrickProperty Parms{};
 
@@ -127,9 +132,10 @@ void IBP_IBrickPropertyInterface_C::UpdateFocusedBrickProperty(const struct FBP_
 void IBP_IBrickPropertyInterface_C::ReflectBrickProperties(TArray<struct FBP_FBrickPropertyDeclaration>* Return)
 {
 	static class UFunction* Func = nullptr;
+	std::string ClassName = AsUObject()->Class->Name.ToString();
 
 	if (Func == nullptr)
-		Func = AsUObject()->Class->GetFunction("BP_IBrickPropertyInterface_C", "ReflectBrickProperties");
+		Func = AsUObject()->Class->GetFunction(ClassName.c_str(), "ReflectBrickProperties");
 
 	Params::BP_IBrickPropertyInterface_C_ReflectBrickProperties Parms{};
 
@@ -148,9 +154,10 @@ void IBP_IBrickPropertyInterface_C::ReflectBrickProperties(TArray<struct FBP_FBr
 void IBP_IBrickPropertyInterface_C::ShouldCallSuperReflectBrickProperties(struct FBP_ShouldCallSuperSettings* Return)
 {
 	static class UFunction* Func = nullptr;
+	std::string ClassName = AsUObject()->Class->Name.ToString();
 
 	if (Func == nullptr)
-		Func = AsUObject()->Class->GetFunction("BP_IBrickPropertyInterface_C", "ShouldCallSuperReflectBrickProperties");
+		Func = AsUObject()->Class->GetFunction(ClassName.c_str(), "ShouldCallSuperReflectBrickProperties");
 
 	Params::BP_IBrickPropertyInterface_C_ShouldCallSuperReflectBrickProperties Parms{};
 

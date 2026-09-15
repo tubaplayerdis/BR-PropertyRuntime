@@ -4,6 +4,8 @@
 #include <Hooking/MinHook/MinHook.h>
 #include <BR-SDK.hpp>
 #include "Hooks.hpp"
+#include "BP_IBrickPropertyInterface_classes.hpp"
+#include "IBrickPropertyInterface.hpp"
 
 
 #ifdef _DEBUG
@@ -74,38 +76,51 @@ DWORD WINAPI MainThread(LPVOID lpReserved)
 #ifdef CONSOLE
     std::cout << "Brick Rigs Property Runtime - American_Stig (tbgit) @Discord" << std::endl;
     std::cout << "API Reference: " << "https://github.com/tubaplayerdis/BR-LuaRuntime" << std::endl;
-    std::cout << "Lua runtime will cause FREEZES Sometimes - Press ENTER to fix" << std::endl;
-    std::cout << "Lua runtime is in developer mode - Press F6 to uninject" << std::endl;
+    std::cout << "Property Runtime will cause FREEZES Sometimes - Press ENTER to fix" << std::endl;
+    std::cout << "Property Runtime is in developer mode - Press F6 to uninject" << std::endl;
 #endif
 
     BR_SDK_Init();
     MH_Initialize();
     Hooks::SetupCreateObjectHook();
 
-    if (false)
-    {
-        for (int i = 0; i < SDK::UObject::GObjects->Num(); ++i)
-        {
-            SDK::UObject* Object = SDK::UObject::GObjects->GetByIndex(i);
-
-            std::cout << Object << std::endl;
-
-            if (!Object || !Object->Class)
-                continue;
-
-            std::cout << Object->Class->Name.ToString() << std::endl;
-            //std::cout << (uint64_t)GetMember<SDK::EClassCastFlags>((void*)Object->Class, 0xE0) << std::endl;
-
-            /*
-            if (Object->HasTypeFlag(SDK::EClassCastFlags::Class))
-                std::cout << "yay" << std::endl;
-            */
-        }
-    }
-
 #ifdef CONSOLE
     while (true)
     {
+        if (GetAsyncKeyState(VK_F7) & 0x8000)
+        {
+            for (int i = 0; i < SDK::UObject::GObjects->Num(); ++i)
+            {
+                SDK::UObject* Object = SDK::UObject::GObjects->GetByIndex(i);
+
+                if (!Object || !Object->Class)
+                    continue;
+
+                if (Object->IsA(SDK::UPropertyContainerWidget::StaticClass()))
+                {
+                    TSharedPtr<FBrickPropertyEditInfo> PropertyInfo = GetMember<TSharedPtr<FBrickPropertyEditInfo>>(Object, offsetof(SDK::UPropertyContainerWidget, PropertyWidget) - sizeof(TSharedPtr<FBrickPropertyEditInfo>));
+                    if (!PropertyInfo.Object)
+                    {
+                        std::cout << "null prop info!" << std::endl;
+                        continue;
+                    }
+
+                    if (PropertyInfo.Object->BrickProperty.Object)
+                    {
+                        std::cout << "valid prop" << std::endl;
+                        std::cout << PropertyInfo.Object->FullPropertyName.ToString() << std::endl;
+                        std::cout << PropertyInfo.Object->BrickProperty.Object->PropertyName.ToString() << std::endl;
+                        std::cout << PropertyInfo.Object->BrickProperty.Object->Property << std::endl;
+                    }
+                }
+                //std::cout << (uint64_t)GetMember<SDK::EClassCastFlags>((void*)Object->Class, 0xE0) << std::endl;
+
+                /*
+                if (Object->HasTypeFlag(SDK::EClassCastFlags::Class))
+                    std::cout << "yay" << std::endl;
+                */
+            }
+        }
 
         if (GetAsyncKeyState(VK_F6) & 0x8000)
         {

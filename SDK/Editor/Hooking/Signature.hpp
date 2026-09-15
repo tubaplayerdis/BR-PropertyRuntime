@@ -30,7 +30,7 @@ public:
      */
     explicit Signature(const char* signature) noexcept;
 
-    explicit Signature(const char* signature, const char* module) noexcept;
+    explicit Signature(const char* signature, const char* module, bool call_target) noexcept;
 
     /**
      * @brief Creates an address only signature. For use by Hook class.
@@ -64,7 +64,12 @@ public:
         if (GetPtr() == 0) std::cerr << "UNRESOLVED SIG: " << GetSig() << std::endl;
     }
 
-    Function(const char* ptr, const char* module = nullptr) noexcept : Signature(ptr, module)
+    Function(const char* ptr) noexcept : Signature(ptr)
+    {
+        if (GetPtr() == 0) std::cerr << "UNRESOLVED SIG: " << GetSig() << std::endl;
+    }
+
+    Function(const char* ptr, const char* module, bool call_target = false) noexcept : Signature(ptr, module, call_target)
     {
         if (GetPtr() == 0) std::cerr << "UNRESOLVED SIG: " << GetSig() << std::endl;
     }

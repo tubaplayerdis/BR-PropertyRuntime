@@ -2,6 +2,7 @@
 #include <string>
 #include <map>
 #include "IBrickPropertyInterface.hpp"
+#include "BP_IBrickPropertyInterface_classes.hpp"
 
 extern std::map<std::string, IBrickPropertyInterface*> InterfaceRegistry;
 
@@ -17,6 +18,11 @@ inline SDK::UBrickEditorObject* GetEditorObject(IBrickPropertyInterface* This)
 	return reinterpret_cast<SDK::UBrickEditorObject*>(
 		reinterpret_cast<std::uint8_t*>(This) - sizeof(SDK::UObject));
 
+}
+
+inline SDK::IBP_IBrickPropertyInterface_C* GetAsInterface(IBrickPropertyInterface* This)
+{
+	return reinterpret_cast<SDK::IBP_IBrickPropertyInterface_C*>(GetEditorObject(This));
 }
 
 void Deconstructor_IBrickPropertyInterfaceOverride(IBrickPropertyInterface*);
