@@ -4,13 +4,13 @@
 
 #ifdef BRMK_SDK
 Function<void(FBrickPropertyReflection*, TSharedRef<FBrickProperty>* InBrickProperty, SDK::FString* InFullPropertyName)>                                AddBrickProperty("48 89 5C 24 10 55 56 57 48 83 EC 60", "BrickRigsModKitSteam-BrickRigs.dll");
-Function<FBrickPropertyEditInfo*(FBrickPropertyReflection*, TSharedRef<FBrickProperty>* InBrickProperty, SDK::FString* InFullPropertyName, SDK::FText* InDisplayName)>     AddBrickPropertyDisplayInfo("48 89 5C 24 10 55 56 57 41 56 41 57 48 81", "BrickRigsModKitSteam-BrickRigs.dll");
+Function<FBrickPropertyEditInfo*(FBrickPropertyReflection*, TSharedRef<FBrickProperty>* InBrickProperty, SDK::FString* InFullPropertyName, SDK::FText*  InDisplayName)>     AddBrickPropertyDisplayInfo("48 89 5C 24 10 55 56 57 41 56 41 57 48 81", "BrickRigsModKitSteam-BrickRigs.dll");
 Function<TSharedRef<FBoolBrickProperty>* (TSharedRef<FBoolBrickProperty>*)>                                                                             ConstructBrickProperty_Bool("E8 ?? ?? ?? ?? 0F BA EE 08", "BrickRigsModKitSteam-BrickRigs.dll", true);
 Function<SDK::FProperty*(SDK::UStruct*, SDK::FName)>																									FindPropertyByName(Hooks::GetSymbolAddress("BrickRigsModKitSteam-CoreUObject.dll", "?FindPropertyByName@UStruct@@QEBAPEAVFProperty@@VFName@@@Z"));
 Function<SDK::FText*(SDK::FText* This, SDK::FText* That)>																								FTextCopyOperator(Hooks::GetSymbolAddress("BrickRigsModKitSteam-Core.dll", "??4FText@@QEAAAEAV0@$$QEAV0@@Z"));
 #else
 Function<void(FBrickPropertyReflection*, TSharedRef<FBrickProperty>* InBrickProperty, SDK::FString* InFullPropertyName)>                                AddBrickProperty("48 89 5C 24 10 48 89 74 24 18 57 48 83 EC 50 48 8D 59");
-Function<FBrickPropertyEditInfo*(FBrickPropertyReflection*, TSharedRef<FBrickProperty>* InBrickProperty, SDK::FString* InFullPropertyName, SDK::FText* InDisplayName)>     AddBrickPropertyDisplayInfo("48 89 5C 24 10 48 89 6C 24 18 56 57 41 56 48 83 EC 50 49 8B D9");
+Function<FBrickPropertyEditInfo*(FBrickPropertyReflection*, TSharedRef<FBrickProperty>* InBrickProperty, SDK::FString* InFullPropertyName, SDK::FText*  InDisplayName)>     AddBrickPropertyDisplayInfo("48 89 5C 24 10 48 89 6C 24 18 56 57 41 56 48 83 EC 50 49 8B D9");
 Function<TSharedRef<FBoolBrickProperty>* (TSharedRef<FBoolBrickProperty>*)>                                                                             ConstructBrickProperty_Bool("E8 ?? ?? ?? ?? 48 8B 8D 38 07 00 00");
 Function<SDK::FProperty* (SDK::UStruct*, SDK::FName)>																									FindPropertyByName("48 8B 41 70 48 85 C0 74 16");
 Function<SDK::FText* (SDK::FText* This, SDK::FText* That)>																								FTextCopyOperator("48 89 5C 24 18 48 89 74 24 20 41 56 48 83 EC 40 48 8B 5A");
@@ -95,6 +95,25 @@ void DeclareBooleanProperty(SDK::UClass* ObjClass, SDK::FBP_FBrickPropertyDeclar
 {
 	SDK::FString FullPropertyName = SDK::UKismetTextLibrary::Conv_TextToString(Declaration.PropertyName_6_90CFF1AA403BE3727D57088D9A0E8480);
 	SDK::FProperty* Property = GetPropertyValid(L"bool", ObjClass, FullPropertyName);
+	if (Property == nullptr) return;
+
+	TSharedRef<FBoolBrickProperty> PropertyReference;
+	ConstructBrickProperty_Bool(&PropertyReference);
+
+	SDK::FName PropertyName = SDK::UKismetStringLibrary::Conv_StringToName(FullPropertyName);
+	std::cout << FullPropertyName.ToString() << std::endl;
+
+	PropertyReference.Object->PropertyName = PropertyName;
+	PropertyReference.Object->Property = Property;
+
+	AddPropertyGeneric(FullPropertyName, PropertyReference, Declaration, Reflection);
+}
+
+void DeclareNumericProperty(SDK::UClass* ObjClass, SDK::FBP_FBrickPropertyDeclaration Declaration, FBrickPropertyReflection* Reflection)
+{
+	//TODO: find a type to store all values even if it takes more memory.
+	SDK::FString FullPropertyName = SDK::UKismetTextLibrary::Conv_TextToString(Declaration.PropertyName_6_90CFF1AA403BE3727D57088D9A0E8480);
+	SDK::FProperty* Property = GetPropertyValid(L"float", ObjClass, FullPropertyName);
 	if (Property == nullptr) return;
 
 	TSharedRef<FBoolBrickProperty> PropertyReference;
