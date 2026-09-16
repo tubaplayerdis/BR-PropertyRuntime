@@ -16,6 +16,13 @@ struct TSharedRef
 };
 
 template<typename T>
+struct TOptional
+{
+    T byte;
+    bool isSet;
+};
+
+template<typename T>
 struct TSharedPtr
 {
     T* Object;
@@ -86,6 +93,36 @@ struct __declspec(align(2)) FTextBrickProperty : FBrickProperty
 //static_assert(sizeof(FTextBrickProperty) == 0x20);
 
 typedef FBrickProperty FBoolBrickProperty;//Struct of same size in dissasembly
+
+/* 199928 */
+struct __declspec(align(4)) FNumericBrickPropertyValue
+{
+    SDK::FVector Data;
+    unsigned __int8 NumUsed;
+};
+
+/* 199929 */
+struct FNumericBrickPropertyRange
+{
+    FNumericBrickPropertyValue Min;
+    FNumericBrickPropertyValue Max;
+};
+
+template<typename T>
+struct TBrickPropAttribute
+{
+    TOptional<SDK::ENumericValueType> Value;
+    SDK::TDelegate<SDK::ENumericValueType(FBrickPropertyContainer)> Delegate;
+};
+static_assert(sizeof(TBrickPropAttribute<SDK::EFluAxisLock>) == 0x18);
+static_assert(sizeof(TBrickPropAttribute<FNumericBrickPropertyRange>) == 0x18);
+
+struct FNumericBrickPropertyBase : FBrickProperty
+{
+    const TBrickPropAttribute<enum ENumericValueType> ValueType;
+    const TBrickPropAttribute<FNumericBrickPropertyRange> ValueRange;
+    const TBrickPropAttribute<enum EFluAxisLock> AxisLock;
+};
 
 struct FBrickPropertyCategory
 {
