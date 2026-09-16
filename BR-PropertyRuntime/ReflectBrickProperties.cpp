@@ -79,10 +79,9 @@ void AddPropertyGeneric(SDK::FString FullPropertyName, TSharedRef<FBoolBrickProp
 		EditInfo->bIsReadOnly = Declaration.bIsReadOnly_14_36BD3D53474F4FE5A355B294996AD4E5;
 		EditInfo->ColorStyle = Declaration.ColorStyle_17_E6E6524E41F70E650422F49B6491187E;
 
-		return;
 		for (int i = 0; i < Reflection->BrickPropertyEditInfos.Num(); i++)
 		{
-			if (Reflection->BrickPropertyEditInfos[i].First.Object = EditInfo)
+			if (Reflection->BrickPropertyEditInfos[i].First.Object == EditInfo)
 			{
 				Reflection->BrickPropertyEditInfos[i].Second = Declaration.CategoryIndex_37_EDE2EE4A4A7DAAE4534530B70F2CFF7C;
 			}
@@ -91,7 +90,6 @@ void AddPropertyGeneric(SDK::FString FullPropertyName, TSharedRef<FBoolBrickProp
 		//EditInfo->MaxComboBoxListItems = 0;
 	}
 }
-
 
 void DeclareBooleanProperty(SDK::UClass* ObjClass, SDK::FBP_FBrickPropertyDeclaration Declaration, FBrickPropertyReflection* Reflection)
 {
@@ -145,11 +143,11 @@ void ReflectBrickPropertiesOverride(IBrickPropertyInterface* This, FBrickPropert
 	{
 		switch (Declare.Type_33_5AFD4DE54866742EFCB3248308311FFE)
 		{
-		case SDK::EBP_BrickPropertyType::Bool:
-			DeclareBooleanProperty(EditorObject->Class, Declare, Reflection);
-			break;
-		default:
-			break;
+			case SDK::EBP_BrickPropertyType::Bool:
+				DeclareBooleanProperty(EditorObject->Class, Declare, Reflection);
+				break;
+			default:
+				break;
 		}
 	}
 

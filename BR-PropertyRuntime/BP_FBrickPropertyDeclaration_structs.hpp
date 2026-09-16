@@ -26,20 +26,20 @@ struct FBP_FBrickPropertyDeclaration final
 {
 public:
 	EBP_BrickPropertyType                         Type_33_5AFD4DE54866742EFCB3248308311FFE;          // 0x0000(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
-	uint8                                         Pad_1[0x3];                                        // 0x0001(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	int32										  CategoryIndex_37_EDE2EE4A4A7DAAE4534530B70F2CFF7C;
-	class FText                                   PropertyName_6_90CFF1AA403BE3727D57088D9A0E8480;   // 0x0020(0x0018)(Edit, BlueprintVisible)
-	class FText                                   DisplayName_7_E5FF33B84665E94A6EF8C49F03E1C2C5;    // 0x0038(0x0018)(Edit, BlueprintVisible)
-	class FText                                   Description_10_FEF8680340F9F4222764FE876625C467;   // 0x0050(0x0018)(Edit, BlueprintVisible)
-	bool                                          bIsEnabled_12_C37DF3214F1B585DB23291A83D02D5FE;    // 0x0068(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor)
-	bool                                          bIsReadOnly_14_36BD3D53474F4FE5A355B294996AD4E5;   // 0x0069(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor)
-	EBrickUIColorStyle                            ColorStyle_17_E6E6524E41F70E650422F49B6491187E;    // 0x006A(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
-	uint8                                         Pad_6B[0x1];                                       // 0x006B(0x0001)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FBP_NumericBrickPropertySettings       NumericPropertySettings_27_B5B3029842F53C8080C6F492BA6D3775; // 0x006C(0x0020)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
-	struct FBP_TextBrickPropertySettings          TextPropertySettings_28_8A851FA84E30B94D1CA8C2A1E4AF3084; // 0x008C(0x0008)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
-	struct FBP_ColorBrickPropertySettings         ColorPropertySettings_29_E46E7D194FF8F4955306DAAE12A60ADB; // 0x0094(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
-	uint8                                         Pad_95[0x3];                                       // 0x0095(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FBP_BrickInputMappingPropertySettings  InputMappingPropertySettings_30_74A5CD314AD3FC2BF4E73AB3AEBEBCE5; // 0x0098(0x00E8)(Edit, BlueprintVisible, HasGetValueTypeHash)
+	uint8                                         Pad_1[0x3];                                        // 0x0001(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	int32                                         CategoryIndex_37_EDE2EE4A4A7DAAE4534530B70F2CFF7C; // 0x0004(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
+	class FText                                   PropertyName_6_90CFF1AA403BE3727D57088D9A0E8480;   // 0x0008(0x0018)(Edit, BlueprintVisible)
+	class FText                                   DisplayName_7_E5FF33B84665E94A6EF8C49F03E1C2C5;    // 0x0020(0x0018)(Edit, BlueprintVisible)
+	class FText                                   Description_10_FEF8680340F9F4222764FE876625C467;   // 0x0038(0x0018)(Edit, BlueprintVisible)
+	bool                                          bIsEnabled_12_C37DF3214F1B585DB23291A83D02D5FE;    // 0x0050(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor)
+	bool                                          bIsReadOnly_14_36BD3D53474F4FE5A355B294996AD4E5;   // 0x0051(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor)
+	EBrickUIColorStyle                            ColorStyle_17_E6E6524E41F70E650422F49B6491187E;    // 0x0052(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
+	uint8                                         Pad_53[0x1];                                       // 0x0053(0x0001)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FBP_NumericBrickPropertySettings       NumericPropertySettings_27_B5B3029842F53C8080C6F492BA6D3775; // 0x0054(0x0020)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
+	struct FBP_TextBrickPropertySettings          TextPropertySettings_28_8A851FA84E30B94D1CA8C2A1E4AF3084; // 0x0074(0x0008)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
+	struct FBP_ColorBrickPropertySettings         ColorPropertySettings_29_E46E7D194FF8F4955306DAAE12A60ADB; // 0x007C(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
+	uint8                                         Pad_7D[0x3];                                       // 0x007D(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FBP_BrickInputMappingPropertySettings  InputMappingPropertySettings_30_74A5CD314AD3FC2BF4E73AB3AEBEBCE5; // 0x0080(0x00E8)(Edit, BlueprintVisible, HasGetValueTypeHash)
 };
 
 SDK_NAMESPACE_END
