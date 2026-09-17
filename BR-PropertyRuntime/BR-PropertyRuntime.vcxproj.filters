@@ -42,6 +42,9 @@
     <ClCompile Include="BrickPropertyEvents.cpp">
       <Filter>Source Files\Overrides</Filter>
     </ClCompile>
+    <ClCompile Include="VirtualTableRecovery.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Hooks.hpp">
@@ -92,5 +95,8 @@
     <ClInclude Include="PropertyInterfaceOverrides.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="TODO.txt" />
   </ItemGroup>
 </Project>

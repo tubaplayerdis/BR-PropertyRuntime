@@ -4,6 +4,10 @@
 #include "IBrickPropertyInterface.hpp"
 #include "BP_IBrickPropertyInterface_classes.hpp"
 
+//Some virtual tables have strings post the virtual table declarations in rdata.
+template<typename T>
+T* ReoverVirtualTable(std::string signature);
+
 extern std::map<std::string, IBrickPropertyInterface*> InterfaceRegistry;
 
 inline SDK::UBrickEditorObject* GetEditorObject(IBrickPropertyInterface* This)
