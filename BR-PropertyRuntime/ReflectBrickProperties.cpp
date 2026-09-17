@@ -3,9 +3,9 @@
 #include "Hooks.hpp"
 
 #ifdef BRMK_SDK
-Function<void(FBrickPropertyReflection*, TSharedRef<FBrickProperty>* InBrickProperty, SDK::FString* InFullPropertyName)>                                AddBrickProperty("48 89 5C 24 10 55 56 57 48 83 EC 60", "BrickRigsModKitSteam-BrickRigs.dll");
-Function<FBrickPropertyEditInfo*(FBrickPropertyReflection*, TSharedRef<FBrickProperty>* InBrickProperty, SDK::FString* InFullPropertyName, SDK::FText*  InDisplayName)>     AddBrickPropertyDisplayInfo("48 89 5C 24 10 55 56 57 41 56 41 57 48 81", "BrickRigsModKitSteam-BrickRigs.dll");
-Function<TSharedRef<FBoolBrickProperty>* (TSharedRef<FBoolBrickProperty>*)>                                                                             ConstructBrickProperty_Bool("E8 ?? ?? ?? ?? 0F BA EE 08", "BrickRigsModKitSteam-BrickRigs.dll", true);
+Function<void(FBrickPropertyReflection*, TFSharedRef<FBrickProperty>* InBrickProperty, SDK::FString* InFullPropertyName)>                                AddBrickProperty("48 89 5C 24 10 55 56 57 48 83 EC 60", "BrickRigsModKitSteam-BrickRigs.dll");
+Function<FBrickPropertyEditInfo*(FBrickPropertyReflection*, TFSharedRef<FBrickProperty>* InBrickProperty, SDK::FString* InFullPropertyName, SDK::FText*  InDisplayName)>     AddBrickPropertyDisplayInfo("48 89 5C 24 10 55 56 57 41 56 41 57 48 81", "BrickRigsModKitSteam-BrickRigs.dll");
+Function<TFSharedRef<FBoolBrickProperty>* (TFSharedRef<FBoolBrickProperty>*)>                                                                             ConstructBrickProperty_Bool("E8 ?? ?? ?? ?? 0F BA EE 08", "BrickRigsModKitSteam-BrickRigs.dll", true);
 Function<SDK::FProperty*(SDK::UStruct*, SDK::FName)>																									FindPropertyByName(Hooks::GetSymbolAddress("BrickRigsModKitSteam-CoreUObject.dll", "?FindPropertyByName@UStruct@@QEBAPEAVFProperty@@VFName@@@Z"));
 Function<SDK::FText*(SDK::FText* This, SDK::FText* That)>																								FTextCopyOperator(Hooks::GetSymbolAddress("BrickRigsModKitSteam-Core.dll", "??4FText@@QEAAAEAV0@$$QEAV0@@Z"));
 #else
@@ -57,9 +57,9 @@ SDK::FProperty* GetPropertyValid(const wchar_t* TypeName, SDK::UClass* ClassWith
 	return ClassProperty;
 }
 
-void AddPropertyGeneric(SDK::FString FullPropertyName, TSharedRef<FBoolBrickProperty> PropertyReference, SDK::FBP_FBrickPropertyDeclaration Declaration, FBrickPropertyReflection* Reflection)
+void AddPropertyGeneric(SDK::FString FullPropertyName, TFSharedRef<FBrickProperty> PropertyReference, SDK::FBP_FBrickPropertyDeclaration Declaration, FBrickPropertyReflection* Reflection)
 {
-	FBrickPropertyInstance Instance = FBrickPropertyInstance{
+	auto Instance = FBrickPropertyInstance{
 		.BrickProperty = PropertyReference,
 		.FullPropertyName = FullPropertyName,
 		.ParentPropertyChain = SDK::TArray<SDK::FStructProperty>()
@@ -97,7 +97,7 @@ void DeclareBooleanProperty(SDK::UClass* ObjClass, SDK::FBP_FBrickPropertyDeclar
 	SDK::FProperty* Property = GetPropertyValid(L"bool", ObjClass, FullPropertyName);
 	if (Property == nullptr) return;
 
-	TSharedRef<FBoolBrickProperty> PropertyReference;
+	TFSharedRef<FBoolBrickProperty> PropertyReference{};
 	ConstructBrickProperty_Bool(&PropertyReference);
 
 	SDK::FName PropertyName = SDK::UKismetStringLibrary::Conv_StringToName(FullPropertyName);
@@ -116,8 +116,12 @@ void DeclareNumericProperty(SDK::UClass* ObjClass, SDK::FBP_FBrickPropertyDeclar
 	SDK::FProperty* Property = GetPropertyValid(L"float", ObjClass, FullPropertyName);
 	if (Property == nullptr) return;
 
-	TSharedRef<FBoolBrickProperty> PropertyReference;
-	ConstructBrickProperty_Bool(&PropertyReference);
+	TSharedRef<FNumericBrickPropertyBase> PropertyReference = TSharedRef<FNumericBrickPropertyBase>::Make(
+		Declaration.NumericPropertySettings_27_B5B3029842F53C8080C6F492BA6D3775.ValueType_2_CD317FE24E85FE7D02AC699CA204CD82,
+		NumericPropertyTypes::FLOAT_,
+		Declaration.NumericPropertySettings_27_B5B3029842F53C8080C6F492BA6D3775.ValueRangeMin_6_853D06F245BFA933845C069F54279A62,
+		Declaration.NumericPropertySettings_27_B5B3029842F53C8080C6F492BA6D3775.ValueRangeMax_8_3A53C8914D3ABA38F103BD83DA3674EA,
+		Declaration.NumericPropertySettings_27_B5B3029842F53C8080C6F492BA6D3775.AxisLock_11_76843DC84328B4FFF5C254BE82108C7A);
 
 	SDK::FName PropertyName = SDK::UKismetStringLibrary::Conv_StringToName(FullPropertyName);
 	std::cout << FullPropertyName.ToString() << std::endl;
@@ -125,7 +129,7 @@ void DeclareNumericProperty(SDK::UClass* ObjClass, SDK::FBP_FBrickPropertyDeclar
 	PropertyReference.Object->PropertyName = PropertyName;
 	PropertyReference.Object->Property = Property;
 
-	AddPropertyGeneric(FullPropertyName, PropertyReference, Declaration, Reflection);
+	//AddPropertyGeneric(FullPropertyName, PropertyReference, Declaration, Reflection);
 }
 
 void ReflectBrickPropertiesOverride(IBrickPropertyInterface* This, FBrickPropertyReflection* Reflection)
@@ -164,6 +168,10 @@ void ReflectBrickPropertiesOverride(IBrickPropertyInterface* This, FBrickPropert
 		{
 			case SDK::EBP_BrickPropertyType::Bool:
 				DeclareBooleanProperty(EditorObject->Class, Declare, Reflection);
+				break;
+
+			case SDK::EBP_BrickPropertyType::Numeric:
+				//DeclareNumericProperty(EditorObject->Class, Declare, Reflection);
 				break;
 			default:
 				break;

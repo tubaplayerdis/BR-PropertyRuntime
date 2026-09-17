@@ -4,21 +4,7 @@
 #include "IBrickPropertyInterface.hpp"
 #include "BP_IBrickPropertyInterface_classes.hpp"
 
-//Some virtual tables have strings post the virtual table declarations in rdata.
-template<typename T>
-T RecoverVirtualTable(std::string signature);
-
-enum NumericPropertyTypes
-{
-	FLOAT,
-	INT32_,
-	UINT32_,
-	UINT16_,
-	UINT8_,
-	FVECTOR2D,
-	FVECTOR,
-	FROTATOR
-};
+//Some virtual tables have strings post the virtual table declarations in rdata
 
 extern std::map<std::string, IBrickPropertyInterface*> InterfaceRegistry;
 

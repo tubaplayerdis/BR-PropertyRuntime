@@ -1,16 +1,40 @@
 // dllmain.cpp : Defines the entry point for the DLL application.
 #define WIN32_LEAN_AND_MEAN             
 #include <windows.h>
-#include <Hooking/MinHook/MinHook.h>
-#include <BR-SDK.hpp>
-#include "Hooks.hpp"
-#include "BP_IBrickPropertyInterface_classes.hpp"
-#include "IBrickPropertyInterface.hpp"
-
+#include <iostream>
 
 #ifdef _DEBUG
 #define CONSOLE
 #endif
+
+// Move the initialization sequence of this entire file to the "library" stage
+#pragma init_seg(lib)
+
+//Global variables
+HMODULE self = nullptr;
+FILE* pStdIn = nullptr;
+FILE* pStdOut = nullptr;
+FILE* pStdErr = nullptr;
+PVOID pHandleVec = nullptr;
+
+struct Win32ConsoleSetup {
+    Win32ConsoleSetup() {
+#ifdef CONSOLE //If in debug version enable console.
+        AllocConsole();
+        freopen_s(&pStdIn, "CONIN$", "r", stdin);
+        freopen_s(&pStdOut, "CONOUT$", "w", stdout);
+        freopen_s(&pStdErr, "CONOUT$", "w", stderr);
+        SetConsoleTitleW(L"Brick Rigs Property Runtime - Developer");
+        SetConsoleOutputCP(CP_UTF8);
+#endif // _DEBUG
+    }
+};
+// This global object will now be constructed ahead of standard global variables
+Win32ConsoleSetup global_console_bootstrapper;
+
+#include <Hooking/MinHook/MinHook.h>
+#include <BR-SDK.hpp>
+#include "Hooks.hpp"
 
 #pragma region brickrust
 
@@ -43,13 +67,6 @@ extern "C" {
     }
 }
 
-//Global variables
-HMODULE self = nullptr;
-FILE* pStdIn = nullptr;
-FILE* pStdOut = nullptr;
-FILE* pStdErr = nullptr;
-PVOID pHandleVec = nullptr;
-
 //Definied in execption_handler.cpp
 LONG WINAPI UpgradedExceptionHandler(PEXCEPTION_POINTERS ExceptionInfo);
 
@@ -64,21 +81,14 @@ DWORD WINAPI MainThread(LPVOID lpReserved)
     HMODULE hModule = static_cast<HMODULE>(lpReserved);
     self = hModule;
 
-#ifdef CONSOLE //If in debug version enable console.
-    AllocConsole();
-    freopen_s(&pStdIn, "CONIN$", "r", stdin);
-    freopen_s(&pStdOut, "CONOUT$", "w", stdout);
-    freopen_s(&pStdErr, "CONOUT$", "w", stderr);
-    SetConsoleTitleW(L"Brick Rigs Property Runtime - Developer");
-    SetConsoleOutputCP(CP_UTF8);
-#endif // _DEBUG
-
 #ifdef CONSOLE
     std::cout << "Brick Rigs Property Runtime - American_Stig (tbgit) @Discord" << std::endl;
-    std::cout << "API Reference: " << "https://github.com/tubaplayerdis/BR-LuaRuntime" << std::endl;
+    std::cout << "API Reference: " << "https://github.com/tubaplayerdis/BR-PropertyRuntime" << std::endl;
     std::cout << "Property Runtime will cause FREEZES Sometimes - Press ENTER to fix" << std::endl;
     std::cout << "Property Runtime is in developer mode - Press F6 to uninject" << std::endl;
 #endif
+
+    std::cout << Signature::InternalResolveSignature("E8 ?? ?? ?? ?? 0F BA EE 08", Signature::TEXT, "BrickRigsModKitSteam-BrickRigs.dll", true) << std::endl;
 
     BR_SDK_Init();
     MH_Initialize();
@@ -89,37 +99,7 @@ DWORD WINAPI MainThread(LPVOID lpReserved)
     {
         if (GetAsyncKeyState(VK_F7) & 0x8000)
         {
-            for (int i = 0; i < SDK::UObject::GObjects->Num(); ++i)
-            {
-                SDK::UObject* Object = SDK::UObject::GObjects->GetByIndex(i);
-
-                if (!Object || !Object->Class)
-                    continue;
-
-                if (Object->IsA(SDK::UPropertyContainerWidget::StaticClass()))
-                {
-                    TSharedPtr<FBrickPropertyEditInfo> PropertyInfo = GetMember<TSharedPtr<FBrickPropertyEditInfo>>(Object, offsetof(SDK::UPropertyContainerWidget, PropertyWidget) - sizeof(TSharedPtr<FBrickPropertyEditInfo>));
-                    if (!PropertyInfo.Object)
-                    {
-                        std::cout << "null prop info!" << std::endl;
-                        continue;
-                    }
-
-                    if (PropertyInfo.Object->BrickProperty.Object)
-                    {
-                        std::cout << "valid prop" << std::endl;
-                        std::cout << PropertyInfo.Object->FullPropertyName.ToString() << std::endl;
-                        std::cout << PropertyInfo.Object->BrickProperty.Object->PropertyName.ToString() << std::endl;
-                        std::cout << PropertyInfo.Object->BrickProperty.Object->Property << std::endl;
-                    }
-                }
-                //std::cout << (uint64_t)GetMember<SDK::EClassCastFlags>((void*)Object->Class, 0xE0) << std::endl;
-
-                /*
-                if (Object->HasTypeFlag(SDK::EClassCastFlags::Class))
-                    std::cout << "yay" << std::endl;
-                */
-            }
+            std::cout << "uhh" << std::endl;
         }
 
         if (GetAsyncKeyState(VK_F6) & 0x8000)

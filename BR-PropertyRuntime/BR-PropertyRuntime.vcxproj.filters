@@ -42,7 +42,7 @@
     <ClCompile Include="BrickPropertyEvents.cpp">
       <Filter>Source Files\Overrides</Filter>
     </ClCompile>
-    <ClCompile Include="VirtualTableRecovery.cpp">
+    <ClCompile Include="NumericPropertyReflection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -93,6 +93,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PropertyInterfaceOverrides.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RefrenceController.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

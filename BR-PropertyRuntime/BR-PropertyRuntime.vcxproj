@@ -328,7 +328,6 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="NumericPropertyReflection.cpp" />
     <ClCompile Include="ReflectBrickProperties.cpp" />
-    <ClCompile Include="VirtualTableRecovery.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BP_BrickInputMappingPropertySettings_structs.hpp" />
@@ -347,6 +346,7 @@
     <ClInclude Include="Hooks.hpp" />
     <ClInclude Include="IBrickPropertyInterface.hpp" />
     <ClInclude Include="PropertyInterfaceOverrides.hpp" />
+    <ClInclude Include="RefrenceController.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="TODO.txt" />

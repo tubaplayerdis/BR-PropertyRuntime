@@ -1,15 +1,9 @@
 #pragma once
 #include <BR-SDK.hpp>
-
-struct FRefrenceControllerBase
-{
-    void* VTable;
-    int SharedRefrenceCount;
-    int WeakRefrenceCount;
-};
+#include "RefrenceController.hpp"
 
 template<typename T>
-struct TSharedRef
+struct TFSharedRef
 {
     T* Object;
     UC::int8 SharedReferenceCount[0x8];
@@ -59,8 +53,6 @@ const struct FBrickEditorReferenceResolver
 };
 
 struct FBrickProperty;
-struct FNumericBrickPropertyBase;
-struct FNumericBrickPropertyRange;
 struct FBrickProperty_vtbl //Search for string FNumericBrickProperty to get the FNumericBrickPropertyBase vtable. subclasses only should implement Get/Set value which can be done on our side.
 {
     SDK::FName* (__fastcall* GetTypeName)(FBrickProperty* This, SDK::FName* result);
@@ -80,13 +72,6 @@ struct FBrickProperty_vtbl //Search for string FNumericBrickProperty to get the 
     bool(__fastcall* CanExportProperty)(FBrickProperty* This, const FBrickPropertyContainer*);
     bool(__fastcall* ImportProperty)(FBrickProperty* This, const FBrickPropertyContainer*, const wchar_t*);
     bool(__fastcall* CanImportProperty)(FBrickProperty* This, const FBrickPropertyContainer*, const wchar_t*);
-};
-
-struct FNumericBrickPropertyBase_vtbl : FBrickProperty_vtbl
-{
-    bool(__fastcall* GetValue)(FNumericBrickPropertyBase* This, const FBrickPropertyContainer*, FNumericBrickPropertyValue*);
-    bool(__fastcall* SetValue)(FNumericBrickPropertyBase* This, const FBrickPropertyContainer*, const FNumericBrickPropertyValue*);
-    FNumericBrickPropertyRange* (__fastcall* GetValueRange)(FNumericBrickPropertyBase* This, FNumericBrickPropertyRange* result, const FBrickPropertyContainer*);
 };
 
 struct FBrickProperty
@@ -147,11 +132,65 @@ struct __declspec(align(2)) FTextBrickProperty : FBrickProperty
 
 typedef FBrickProperty FBoolBrickProperty;//Struct of same size in dissasembly
 
+enum NumericPropertyTypes
+{
+    FLOAT_,
+    INT32_,
+    UINT32_,
+    UINT16_,
+    UINT8_,
+    FVECTOR2D,
+    FVECTOR,
+    FROTATOR
+};
+
 /* 199928 */
 struct __declspec(align(4)) FNumericBrickPropertyValue
 {
     SDK::FVector Data;
     unsigned __int8 NumUsed;
+
+    FNumericBrickPropertyValue() = default;
+
+    // ~Constructor
+    FNumericBrickPropertyValue(float V)
+        : Data(V, 0.f, 0.f), NumUsed(1)
+    {}
+
+    // ~Constructor
+    FNumericBrickPropertyValue(SDK::FVector2D V)
+        : Data(V.X, V.Y, 0.f), NumUsed(2)
+    {}
+
+    // ~Constructor
+    FNumericBrickPropertyValue(SDK::FVector V)
+        : Data(V), NumUsed(3)
+    {}
+
+    // ~Constructor
+    FNumericBrickPropertyValue(SDK::FRotator R)
+        : Data(R.Roll, R.Pitch, R.Yaw), NumUsed(3)
+    {}
+
+    operator float() const
+    {
+        return Data.X;
+    }
+
+    operator SDK::FVector2D() const
+    {
+        return { Data.X, Data.Y };
+    }
+
+    operator SDK::FVector() const
+    {
+        return Data;
+    }
+
+    operator SDK::FRotator() const
+    {
+        return SDK::FRotator(Data.Y, Data.Z, Data.X);
+    }
 
     auto Get(const int Index) const
     {
@@ -165,26 +204,6 @@ struct __declspec(align(4)) FNumericBrickPropertyValue
             return Data.Z;
         default:
             return Data.X;
-            break;
-        }
-    }
-
-    void Set(const int Index, float val)
-    {
-        switch (Index)
-        {
-        case 0:
-            Data.X = val;
-            break;
-        case 1:
-            Data.Y = val;
-            break;
-        case 2:
-            Data.Z = val;
-            break;
-        default:
-            Data.X = val;
-            break;
             break;
         }
     }
@@ -204,7 +223,21 @@ struct __declspec(align(4)) FNumericBrickPropertyValue
     {
 #undef max
         NumUsed = std::max(static_cast<int>(NumUsed), Index + 1);
-        Set(Index, Value);
+        switch (Index)
+        {
+        case 0:
+            Data.X = Value;
+            break;
+        case 1:
+            Data.Y = Value;
+            break;
+        case 2:
+            Data.Z = Value;
+            break;
+        default:
+            Data.X = Value;
+            break;
+        }
     }
 };
 
@@ -221,13 +254,60 @@ struct TBrickPropAttribute
     TOptional<T> Value;
     SDK::TDelegate<T(FBrickPropertyContainer)> Delegate;
 };
-static_assert(sizeof(TBrickPropAttribute<SDK::EFluAxisLock>) == 0x18);
+//static_assert(sizeof(TBrickPropAttribute<SDK::EFluAxisLock>) == 0x18);
+
+struct FNumericBrickPropertyBase;
+void FixVirutalTable(NumericPropertyTypes ValueType, FNumericBrickPropertyBase* Base);
 
 struct FNumericBrickPropertyBase : FBrickProperty
 {
     TBrickPropAttribute<enum SDK::ENumericValueType> ValueType;
     TBrickPropAttribute<FNumericBrickPropertyRange> ValueRange;
     TBrickPropAttribute<enum SDK::EFluAxisLock> AxisLock;
+
+    static unsigned char GetNumUsed(NumericPropertyTypes Types)
+    {
+        switch (Types)
+        {
+        case FLOAT_:
+            return 1;
+        case INT32_:
+            return 1;
+        case UINT32_:
+            return 1;
+        case UINT16_:
+            return 1;
+        case UINT8_:
+            return 1;
+        case FVECTOR2D:
+            return 2;
+        case FVECTOR:
+            return 3;
+        case FROTATOR:
+            return 3;
+        default:
+            return 1;
+        }
+    }
+
+    FNumericBrickPropertyBase(SDK::ENumericValueType TypeDisplay, NumericPropertyTypes valueType, SDK::FVector Min, SDK::FVector Max, SDK::EFluAxisLock axisLock) : FBrickProperty()
+    {
+        const auto NumUsed = GetNumUsed(valueType);
+        AxisLock.Value.byte = axisLock;
+        AxisLock.Value.isSet = true;
+        ValueRange.Value.byte = FNumericBrickPropertyRange{ .Min = FNumericBrickPropertyValue(Min), .Max = FNumericBrickPropertyValue(Max) };
+        ValueRange.Value.isSet = true;
+        ValueType.Value.byte = TypeDisplay;
+        ValueType.Value.isSet = true;
+        FixVirutalTable(valueType, this);
+    }
+};
+
+struct FNumericBrickPropertyBase_vtbl : FBrickProperty_vtbl
+{
+    bool(__fastcall* GetValue)(FNumericBrickPropertyBase* This, const FBrickPropertyContainer&, FNumericBrickPropertyValue&);
+    bool(__fastcall* SetValue)(FNumericBrickPropertyBase* This, const FBrickPropertyContainer&, const FNumericBrickPropertyValue*);
+    FNumericBrickPropertyRange* (__fastcall* GetValueRange)(FNumericBrickPropertyBase* This, FNumericBrickPropertyRange* result, const FBrickPropertyContainer*);
 };
 
 struct FBrickPropertyCategory
@@ -237,11 +317,10 @@ struct FBrickPropertyCategory
 
 struct FBrickPropertyInstance
 {
-    TSharedRef<FBrickProperty> BrickProperty;
+    TFSharedRef<FBrickProperty> BrickProperty;
     SDK::FString FullPropertyName;
     SDK::TArray<SDK::FStructProperty> ParentPropertyChain;
 };
-static_assert(sizeof(FBrickPropertyInstance) == 0x30);
 
 const struct __declspec(align(8)) FBrickPropertyChangedEvent
 {

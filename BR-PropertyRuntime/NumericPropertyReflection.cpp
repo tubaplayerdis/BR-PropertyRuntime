@@ -1,14 +1,34 @@
 #include "IBrickPropertyInterface.hpp"
-#include "BP_IBrickPropertyInterface_classes.hpp"
-#include "PropertyInterfaceOverrides.hpp"
 #include <algorithm>
+#include <iostream>
 
-
-FNumericBrickPropertyValue SanitizeValue(const FNumericBrickPropertyBase& Property, const FNumericBrickPropertyValue& NewValue)
+template<typename T>
+T RecoverVirtualTable(std::string signature)
 {
-	const auto Range = Property.ValueRange.Value.byte;
-	auto OutValue = NewValue;
-	const auto ActualAxisLock = Property.AxisLock.Value.byte;
+#ifdef BRMK_SDK
+	unsigned long long VirtualTableString = 0;//Signature::InternalResolveSignature(signature, Signature::SearchContext::RDATA, "BrickRigsModKitSteam-BrickRigs.dll");
+#else
+	unsigned long long VirtualTableString = Signature::InternalResolveSignature(signature, Signature::SearchContext::RDATA);
+#endif // BRMK_SDK
+
+	if (!VirtualTableString)
+		std::cout << "Failed to recover virtual table!" << std::endl;
+
+	std::cout << "Vtable: " << VirtualTableString << std::endl;
+
+	// The vtable's last entry ends exactly where the string begins.
+	// Since T's layout matches the real vtable slot-for-slot, sizeof(T)
+	// is exactly the byte span of the vtable.
+	uintptr_t VTableStart = static_cast<uintptr_t>(VirtualTableString) - sizeof(T);
+
+	return *reinterpret_cast<T*>(VTableStart);
+}
+
+FNumericBrickPropertyValue SanitizeValue(FNumericBrickPropertyBase* Property, const FNumericBrickPropertyValue* NewValue)
+{
+	const auto Range = Property->ValueRange.Value.byte;
+	auto OutValue = *NewValue;
+	const auto ActualAxisLock = Property->AxisLock.Value.byte;
 	for (auto i = 0; i < OutValue.NumUsed; ++i)
 	{
 		// Remap the index according to the axis lock
@@ -19,29 +39,52 @@ FNumericBrickPropertyValue SanitizeValue(const FNumericBrickPropertyBase& Proper
 	return OutValue;
 }
 
-template <typename FNumericType>
-bool ComparePropertyValues(FBrickProperty* This, const void* A, const void* B)
+template<typename FNumericType>
+struct FNumericBrickProperty_vtbl : FNumericBrickPropertyBase_vtbl
 {
-	return This->CompareInternal<FNumericType>(A, B);
-}
-template <typename FNumericType>
-bool SetValue(FBrickProperty* This, const FBrickPropertyContainer& Container, const FNumericBrickPropertyValue& NewValue)
-{
-	const auto ActualValue = This->SanitizeValue(Container, NewValue);
-	return This->SetValueInternal<FNumericType>(Container, ActualValue);
-}
-template <typename FNumericType>
-bool GetValue(FBrickProperty* This, , const FBrickPropertyContainer& Container, FNumericBrickPropertyValue& OutValue)
-{
-	FNumericType ActualValue;
-	if (This->GetValueInternal<FNumericType>(Container, ActualValue))
+	static bool _ComparePropertyValues(FNumericBrickPropertyBase* This, const void* A, const void* B)
 	{
-		OutValue = ActualValue;
-		return true;
+		return This->CompareInternal<FNumericType>(A, B);
 	}
 
-	return false;
-}
+	static bool _SetValue(FNumericBrickPropertyBase* This, const FBrickPropertyContainer& Container, const FNumericBrickPropertyValue* NewValue)
+	{
+		const auto ActualValue = SanitizeValue(This, NewValue);
+		return This->SetValueInternal<FNumericType>(Container, ActualValue);
+	}
+
+	static bool _GetValue(FNumericBrickPropertyBase* This, const FBrickPropertyContainer& Container, FNumericBrickPropertyValue& OutValue)
+	{
+		FNumericType ActualValue;
+		if (This->GetValueInternal<FNumericType>(Container, ActualValue))
+		{
+			OutValue = ActualValue;
+			return true;
+		}
+		return false;
+	}
+
+	FNumericBrickProperty_vtbl()
+		: FNumericBrickPropertyBase_vtbl(RecoverVirtualTable<FNumericBrickPropertyBase_vtbl>("46 4E 75 6D 65 72 69 63 42 72 69 63 6B 50 72 6F"))
+	{
+		SetValue = _SetValue;
+		GetValue = _GetValue;
+		//ComparePropertyValues = reinterpret_cast<bool(__fastcall * ComparePropertyValues)(FBrickProperty * This, void*, void*)>(_ComparePropertyValues);
+	}
+};
+
+#define DECLARE_VTABLE_NUMERIC(type) static auto type##__FNumericBrickPropertyVTable = FNumericBrickProperty_vtbl<type>()
+
+using namespace SDK;
+//DECLARE_VTABLE_NUMERIC(float);
+//DECLARE_VTABLE_NUMERIC(int32_t);
+//DECLARE_VTABLE_NUMERIC(uint32_t);
+//DECLARE_VTABLE_NUMERIC(uint16_t);
+//DECLARE_VTABLE_NUMERIC(uint8_t);
+//DECLARE_VTABLE_NUMERIC(FVector2D);
+//DECLARE_VTABLE_NUMERIC(FVector);
+//DECLARE_VTABLE_NUMERIC(FRotator);
+
 
 
 /*
@@ -56,73 +99,39 @@ bool GetValue(FBrickProperty* This, , const FBrickPropertyContainer& Container, 
 * FRotator
 */
 
-static unsigned char GetNumUsed(NumericPropertyTypes Types)
+void FixVirutalTable(NumericPropertyTypes ValueType, FNumericBrickPropertyBase* Base)
 {
-	switch (Types)
-	{
-	case FLOAT:
-		return 1;
-	case INT32_:
-		return 1;
-	case UINT32_:
-		return 1;
-	case UINT16_:
-		return 1;
-	case UINT8_:
-		return 1;
-	case FVECTOR2D:
-		return 2;
-	case FVECTOR:
-		return 3;
-	case FROTATOR:
-		return 3;
-	default:
-		return 1;
-	}
-}
- 
-
-static FNumericBrickPropertyBase_vtbl OriginalVTable = RecoverVirtualTable<FNumericBrickPropertyBase_vtbl>("46 4E 75 6D 65 72 69 63 42 72 69 63 6B 50 72 6F");
-static FNumericBrickPropertyBase_vtbl FloatVTable = OriginalVTable;
-
-
-FNumericBrickPropertyBase ConstructNumericProperty(SDK::ENumericValueType TypeDisplay, NumericPropertyTypes ValueType, SDK::FVector Min, SDK::FVector Max, SDK::EFluAxisLock AxisLock)
-{
-	const auto NumUsed = GetNumUsed(ValueType);
-
-	FNumericBrickPropertyBase Base{};
-	FNumericBrickPropertyBase_vtbl Replacement = OrginalVTable;
-
-	Replacement.Destructor_FBrickProperty = 
-
-
-	Base.AxisLock.Value.byte = AxisLock;
-	Base.AxisLock.Value.isSet = true;
-	Base.ValueRange.Value.byte = FNumericBrickPropertyRange{ .Min = {.Data = Min, .NumUsed = NumUsed }, .Max = {.Data = Max, .NumUsed = NumUsed} };
-	Base.ValueRange.Value.isSet = true;
-	Base.ValueType.Value.byte = TypeDisplay;
-	Base.ValueType.Value.isSet = true;
-
+	return;
+	/*
 	switch (ValueType)
 	{
-	case FLOAT:
-
-		return 1;
+	case FLOAT_:
+		Base->VTable = &float__FNumericBrickPropertyVTable;
+		break;
 	case INT32_:
-		return 1;
+		Base->VTable = &int32_t__FNumericBrickPropertyVTable;
+		break;
 	case UINT32_:
-		return 1;
+		Base->VTable = &uint32_t__FNumericBrickPropertyVTable;
+		break;
 	case UINT16_:
-		return 1;
+		Base->VTable = &uint16_t__FNumericBrickPropertyVTable;
+		break;
 	case UINT8_:
-		return 1;
+		Base->VTable = &uint8_t__FNumericBrickPropertyVTable;
+		break;
 	case FVECTOR2D:
-		return 2;
+		Base->VTable = &FVector2D__FNumericBrickPropertyVTable;
+		break;
 	case FVECTOR:
-		return 3;
+		Base->VTable = &FVector__FNumericBrickPropertyVTable;
+		break;
 	case FROTATOR:
-		return 3;
+		Base->VTable = &FRotator__FNumericBrickPropertyVTable;
+		break;
 	default:
-		return 1;
+		Base->VTable = &float__FNumericBrickPropertyVTable;
+		break;
 	}
+	*/
 }
