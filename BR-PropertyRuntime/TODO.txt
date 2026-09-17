@@ -1,0 +1,5 @@
+Change the input mapping property type to input channel. (syntatic)
+Add support for enumeration properties.
+Complete the virtual table recovery.
+add generic implementations for enum properties and numerics. have them replicate the offical impelmentations.
+enumerations have a virtual function that is called to get the enumerations.
