@@ -54,7 +54,9 @@ const struct FBrickEditorReferenceResolver
 };
 
 struct FBrickProperty;
-struct FBrickProperty_vtbl
+struct FNumericBrickPropertyBase;
+struct FNumericBrickPropertyRange;
+struct FBrickProperty_vtbl //Search for string FNumericBrickProperty to get the FNumericBrickPropertyBase vtable. subclasses only should implement Get/Set value which can be done on our side.
 {
     SDK::FName* (__fastcall* GetTypeName)(FBrickProperty* This, SDK::FName* result);
     SDK::FName* (__fastcall* GetValueTypeName)(FBrickProperty* This, SDK::FName* result);
@@ -74,6 +76,13 @@ struct FBrickProperty_vtbl
     bool(__fastcall* CanExportProperty)(FBrickProperty* This, const FBrickPropertyContainer*);
     bool(__fastcall* ImportProperty)(FBrickProperty* This, const FBrickPropertyContainer*, const wchar_t*);
     bool(__fastcall* CanImportProperty)(FBrickProperty* This, const FBrickPropertyContainer*, const wchar_t*);
+};
+
+struct FNumericBrickPropertyBase_vtbl : FBrickProperty_vtbl
+{
+    bool(__fastcall* GetValue)(FNumericBrickPropertyBase* This, const FBrickPropertyContainer*, FNumericBrickPropertyValue*);
+    bool(__fastcall* SetValue)(FNumericBrickPropertyBase* This, const FBrickPropertyContainer*, const FNumericBrickPropertyValue*);
+    FNumericBrickPropertyRange* (__fastcall* GetValueRange)(FNumericBrickPropertyBase* This, FNumericBrickPropertyRange* result, const FBrickPropertyContainer*);
 };
 
 struct FBrickProperty
@@ -119,9 +128,9 @@ static_assert(sizeof(TBrickPropAttribute<FNumericBrickPropertyRange>) == 0x18);
 
 struct FNumericBrickPropertyBase : FBrickProperty
 {
-    const TBrickPropAttribute<enum ENumericValueType> ValueType;
+    const TBrickPropAttribute<enum SDK::ENumericValueType> ValueType;
     const TBrickPropAttribute<FNumericBrickPropertyRange> ValueRange;
-    const TBrickPropAttribute<enum EFluAxisLock> AxisLock;
+    const TBrickPropAttribute<enum SDK::EFluAxisLock> AxisLock;
 };
 
 struct FBrickPropertyCategory
