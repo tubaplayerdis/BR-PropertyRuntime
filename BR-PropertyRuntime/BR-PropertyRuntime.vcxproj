@@ -326,6 +326,7 @@
     <ClCompile Include="InitializeObjectHook.cpp" />
     <ClCompile Include="ExceptionHandler.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="NumericPropertyReflection.cpp" />
     <ClCompile Include="ReflectBrickProperties.cpp" />
     <ClCompile Include="VirtualTableRecovery.cpp" />
   </ItemGroup>

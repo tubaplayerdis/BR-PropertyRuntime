@@ -20,7 +20,7 @@
 */
 class Signature
 {
-    std::string Sig;
+    const std::string Sig;
 public:
 
     /**
@@ -49,6 +49,19 @@ public:
      * @brief This does what you think it does.
      */
     std::string GetSig() const;
+
+    /**
+    * Section context for searching. Usefull for getting vtables from rdata etc
+    */
+    enum SearchContext
+    {
+        TEXT = 0,
+        DATA = 1 << 0,
+        RDATA = 1 << 1,
+        BSS = 1 << 2,
+    };
+
+    static uintptr_t InternalResolveSignature(const std::string& signature, SearchContext context, const char* module = nullptr, bool call_target = false) noexcept;
 
 };
 

@@ -46,6 +46,11 @@ const struct FBrickPropertyContainer
 {
     SDK::UObject* RootObject;
     SDK::TArray<void*> ContainerChain;
+
+    void* GetContainer() const
+    {
+        return ContainerChain.Num() ? ContainerChain[ContainerChain.Num()-1] : RootObject;
+    }
 };
 
 const struct FBrickEditorReferenceResolver
@@ -64,9 +69,8 @@ struct FBrickProperty_vtbl //Search for string FNumericBrickProperty to get the 
     void(__fastcall* GetTypeHierarchyInternal)(FBrickProperty* This, SDK::TArray<SDK::FName>*);
     void(__fastcall* Destructor_FBrickProperty)(FBrickProperty* This);
     void(__fastcall* GetTypeHierarchy)(FBrickProperty* This, SDK::TArray<SDK::FName>*);
-    bool(__fastcall* ComparePropertyValues)(FBrickProperty* This, const void*, const void*);
     bool(__fastcall* IsPropertyNull)(FBrickProperty* This);//Name guessed from the behavior of the function
-    bool(__fastcall* FluppuSpecialSauce1)(FBrickProperty* This, void*, void*);
+    bool(__fastcall* ComparePropertyValues)(FBrickProperty* This, void*, void*);
     bool(__fastcall* SerializeProperty)(FBrickProperty* This, void* FArchive_Ptr, const FBrickPropertyContainer* Container, UC::int8 Version, const FBrickEditorReferenceResolver*);
     bool(__fastcall* DoesObjectContainPropertyInternal)(FBrickProperty* This, const SDK::UObject*);
     bool(__fastcall* GetValueAsText)(FBrickProperty* This, const FBrickPropertyContainer*, SDK::FText*);
@@ -90,6 +94,46 @@ struct FBrickProperty
     FBrickProperty_vtbl* VTable;
     SDK::FProperty* Property;
     SDK::FName PropertyName;
+
+    template <typename ValueType>
+    ValueType* GetValuePtr(const FBrickPropertyContainer& Container)
+    {
+        //check(Property && Container.IsValid());
+        return Property->ContainerPtrToValuePtr<ValueType>(Container.GetContainer());
+    }
+
+    template <typename ValueType>
+    bool SetValueInternal(const FBrickPropertyContainer& Container, const ValueType& NewValue)
+    {
+        // Set the actual value
+        ValueType* ValuePtr = GetValuePtr<ValueType>(Container);
+        if (ValuePtr)
+        {
+            *ValuePtr = NewValue;
+            return true;
+        }
+
+        return false;
+    }
+
+    template <typename ValueType>
+    bool GetValueInternal(const FBrickPropertyContainer& Container, ValueType& OutValue)
+    {
+        const ValueType* ValuePtr = GetValuePtr<ValueType>(Container);
+        if (ValuePtr)
+        {
+            OutValue = *ValuePtr;
+            return true;
+        }
+
+        return false;
+    }
+
+    template <typename T>
+    static bool CompareInternal(const void* A, const void* B)
+    {
+        return *static_cast<const T*>(A) == *static_cast<const T*>(B);
+    }
 };
 
 struct __declspec(align(2)) FTextBrickProperty : FBrickProperty
@@ -108,6 +152,60 @@ struct __declspec(align(4)) FNumericBrickPropertyValue
 {
     SDK::FVector Data;
     unsigned __int8 NumUsed;
+
+    auto Get(const int Index) const
+    {
+        switch (Index)
+        {
+        case 0:
+            return Data.X;
+        case 1:
+            return Data.Y;
+        case 2:
+            return Data.Z;
+        default:
+            return Data.X;
+            break;
+        }
+    }
+
+    void Set(const int Index, float val)
+    {
+        switch (Index)
+        {
+        case 0:
+            Data.X = val;
+            break;
+        case 1:
+            Data.Y = val;
+            break;
+        case 2:
+            Data.Z = val;
+            break;
+        default:
+            Data.X = val;
+            break;
+            break;
+        }
+    }
+
+    auto GetOr(const int Index, const float Fallback) const
+    {
+        return Index < NumUsed ? Get(Index) : Fallback;
+    }
+
+    auto GetOrFirst(const int Index) const
+    {
+#undef min
+        return Get(std::min(Index, NumUsed - 1));
+    }
+
+    void Set(const int Index, const float Value)
+    {
+#undef max
+        NumUsed = std::max(static_cast<int>(NumUsed), Index + 1);
+        Set(Index, Value);
+    }
 };
 
 /* 199929 */
@@ -120,17 +218,16 @@ struct FNumericBrickPropertyRange
 template<typename T>
 struct TBrickPropAttribute
 {
-    TOptional<SDK::ENumericValueType> Value;
-    SDK::TDelegate<SDK::ENumericValueType(FBrickPropertyContainer)> Delegate;
+    TOptional<T> Value;
+    SDK::TDelegate<T(FBrickPropertyContainer)> Delegate;
 };
 static_assert(sizeof(TBrickPropAttribute<SDK::EFluAxisLock>) == 0x18);
-static_assert(sizeof(TBrickPropAttribute<FNumericBrickPropertyRange>) == 0x18);
 
 struct FNumericBrickPropertyBase : FBrickProperty
 {
-    const TBrickPropAttribute<enum SDK::ENumericValueType> ValueType;
-    const TBrickPropAttribute<FNumericBrickPropertyRange> ValueRange;
-    const TBrickPropAttribute<enum SDK::EFluAxisLock> AxisLock;
+    TBrickPropAttribute<enum SDK::ENumericValueType> ValueType;
+    TBrickPropAttribute<FNumericBrickPropertyRange> ValueRange;
+    TBrickPropAttribute<enum SDK::EFluAxisLock> AxisLock;
 };
 
 struct FBrickPropertyCategory

@@ -6,7 +6,19 @@
 
 //Some virtual tables have strings post the virtual table declarations in rdata.
 template<typename T>
-T* ReoverVirtualTable(std::string signature);
+T RecoverVirtualTable(std::string signature);
+
+enum NumericPropertyTypes
+{
+	FLOAT,
+	INT32_,
+	UINT32_,
+	UINT16_,
+	UINT8_,
+	FVECTOR2D,
+	FVECTOR,
+	FROTATOR
+};
 
 extern std::map<std::string, IBrickPropertyInterface*> InterfaceRegistry;
 
