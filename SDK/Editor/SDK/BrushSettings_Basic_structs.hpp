@@ -10,9 +10,9 @@
 
 #include "Basic.hpp"
 
-#include "BrushEffects_List_structs.hpp"
 #include "BrushBlendType_structs.hpp"
 #include "BrushSettings_Basic_Falloff_structs.hpp"
+#include "BrushEffects_List_structs.hpp"
 
 
 SDK_NAMESPACE_START
@@ -22,7 +22,7 @@ SDK_NAMESPACE_START
 struct FBrushSettings_Basic final
 {
 public:
-	BrushBlendType::EBrushBlendType               BlendMode_7_3ABE1C234762276B4DF0709088014847;      // 0x0000(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
+	EBrushBlendType								  BlendMode_7_3ABE1C234762276B4DF0709088014847;      // 0x0000(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	bool                                          InvertShape_5_291051F04C29EC4547F20D8304048BC0;    // 0x0001(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor)
 	uint8                                         Pad_2[0x2];                                        // 0x0002(0x0002)(Fixing Size After Last Property [ Dumper-7 ])
 	struct FBrushSettings_Basic_Falloff           FalloffSettings_11_E46EADFB4DF53B7038BF95B6F4D8A5E5; // 0x0004(0x0014)(Edit, BlueprintVisible, IsPlainOldData, NoDestructor, HasGetValueTypeHash)

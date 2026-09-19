@@ -13,14 +13,16 @@
 
 SDK_NAMESPACE_START
 
+/*
 // UserDefinedEnum ENiagaraCoordinateSpace.ENiagaraCoordinateSpace
 // NumValues: 0x0004
-enum class ENiagaraCoordinateSpace::ENiagaraCoordinateSpace : uint8
+enum class ENiagaraCoordinateSpace : uint8
 {
 	NewEnumerator0                           = 0,
 	NewEnumerator1                           = 1,
 	NewEnumerator2                           = 2,
 	ENiagaraCoordinateSpace_0_MAX            = 3,
 };
+*/
 
 SDK_NAMESPACE_END

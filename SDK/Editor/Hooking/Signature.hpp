@@ -50,18 +50,15 @@ public:
      */
     std::string GetSig() const;
 
-    /**
-    * Section context for searching. Usefull for getting vtables from rdata etc
-    */
     enum SearchContext
     {
-        TEXT = 0,
-        DATA = 1 << 0,
+        TEXT  = 0,
+        DATA  = 1 << 0,
         RDATA = 1 << 1,
-        BSS = 1 << 2,
+        BSS   = 1 << 2,
     };
 
-    static uintptr_t InternalResolveSignature(const std::string& signature, SearchContext context, const char* module = nullptr, bool call_target = false) noexcept;
+    static uintptr_t InternalResolveSignature(const std::string& signature, SearchContext context, const char* Module = nullptr, bool call_target = false) noexcept;
 
 };
 

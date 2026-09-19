@@ -13,13 +13,15 @@
 
 SDK_NAMESPACE_START
 
+/*
 // UserDefinedEnum BrushFalloffMode.BrushFalloffMode
 // NumValues: 0x0003
-enum class BrushFalloffMode::EBrushFalloffMode : uint8
+enum class EBrushFalloffMode : uint8
 {
 	NewEnumerator0                           = 0,
 	NewEnumerator1                           = 1,
 	BrushFalloffMode_MAX                     = 2,
 };
+*/
 
 SDK_NAMESPACE_END

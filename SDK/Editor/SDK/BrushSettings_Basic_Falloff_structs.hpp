@@ -20,7 +20,7 @@ SDK_NAMESPACE_START
 struct FBrushSettings_Basic_Falloff final
 {
 public:
-	BrushFalloffMode::EBrushFalloffMode           FalloffMode_3_3ABE1C234762276B4DF0709088014847;    // 0x0000(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
+	EBrushFalloffMode							  FalloffMode_3_3ABE1C234762276B4DF0709088014847;    // 0x0000(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	uint8                                         Pad_1[0x3];                                        // 0x0001(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
 	float                                         FalloffAngle_9_E8F1F3054FE6A897B74395A867017DF0;   // 0x0004(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 	float                                         FalloffWidth_10_E2C9213F4F485563FF5C778A28EFB13F;  // 0x0008(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash)

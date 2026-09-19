@@ -13,14 +13,16 @@
 
 SDK_NAMESPACE_START
 
+/*
 // UserDefinedEnum ENiagaraOrientationAxis.ENiagaraOrientationAxis
 // NumValues: 0x0004
-enum class ENiagaraOrientationAxis::ENiagaraOrientationAxis : uint8
+enum class ENiagaraOrientationAxis : uint8
 {
 	NewEnumerator0                           = 0,
 	NewEnumerator1                           = 1,
 	NewEnumerator2                           = 2,
 	ENiagaraOrientationAxis_0_MAX            = 3,
 };
+*/
 
 SDK_NAMESPACE_END
